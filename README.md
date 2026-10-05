@@ -50,10 +50,12 @@ console.log(open.map((issue) => issue.data().key))
 
 // File one. project_id is the project's numeric id.
 const filed = await client.Issue().create({ project_id: 1, title: 'Checkout fails on Safari', type: 'bug' })
+console.log(filed.data().key)
 
 // An issue is addressed by its key, which the SDK takes as id.
-const issue = await client.Issue().load({ id: filed.data().key })
-await issue.update({ priority: 3 })
+const issue = await client.Issue().load({ id: 'WEB-142' })
+console.log(issue.data().title)
+await client.Issue().update({ id: 'WEB-142', priority: 3 })
 ```
 
 ### File a bug report from your own code
@@ -65,7 +67,7 @@ import { BuggieSDK } from '@voxgig-sdk/buggie-sdk'
 const reporter = new BuggieSDK({ base: 'https://buggie.eu/api' })
 
 const report = await reporter.Report().create({
-  public_key: process.env.BUGGIE_WIDGET_KEY,
+  public_key: process.env.BUGGIE_WIDGET_KEY ?? '',
   title: 'Pay now does nothing',
   error: { message: 'TypeError: card is undefined' },
   environment: { url: 'https://shop.example.com/checkout', release: '2.4.1' },
@@ -92,7 +94,7 @@ The MCP server is read-only for now. It has two tools, `buggie_list` and `buggie
 
 ### Honest state
 
-Generated on 2026-10-05 from an OpenAPI definition that Voxgig derived from Buggie's source (commit a73c4cd) and verified against a self-hosted Buggie built from it. Not production-tuned. Two known rough edges. Uploading a report's screenshot does not work from the generated clients yet: they send the upload as JSON, while Buggie takes a multipart image at the signed `upload_url`, so post the image to that URL with your own HTTP client. And an issue taken from `list()` cannot be updated directly; load it by key first, as above. Use it as a starting point or a reference.
+Generated on 2026-10-05 from an OpenAPI definition that Voxgig derived from Buggie's source (commit a73c4cd) and verified against a self-hosted Buggie built from it. Not production-tuned. Two known rough edges. Uploading a report's screenshot does not work from the generated clients yet: they send the upload as JSON, while Buggie takes a multipart image at the signed `upload_url`, so post the image to that URL with your own HTTP client. And an issue is updated by its key, passed as `id`; an issue taken from `list()` does not carry it as its id, so read it from `data().key`. Use it as a starting point or a reference.
 
 When teams want SDKs like these production-grade, idiomatic per language, tested, documented, and released through a real pipeline, Voxgig does that work as a consulting engagement. The toolkit also generates Java and C# if your customers need them. Questions: richard@voxgig.com.
 
