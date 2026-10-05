@@ -1,0 +1,55 @@
+# Generated from the API definition and overwritten on every build: do not
+# edit this file. Put customizations in the guide entry file, which includes
+# this one and overrides its defaults:
+#   guide.aontu
+
+guide: {
+  metrics: count: entity: 5
+  metrics: count: path: 6
+  metrics: count: method: 8
+
+  entity: issue: {
+    path: "/v1/issues": {
+      op: create: method: *POST
+      op: create: transform: res: *("`body.data`")|top
+      op: list: method: *GET
+      op: list: transform: res: *("`body.data`")|top
+    }
+    path: "/v1/issues/{key}": {
+      rename: param: "key": *"id"
+      op: load: method: *GET
+      op: load: transform: res: *("`body.data`")|top
+      op: patch: method: *PATCH
+      op: patch: transform: res: *("`body.data`")|top
+    }
+  }
+
+  entity: project: {
+    path: "/v1/projects": {
+      op: list: method: *GET
+      op: list: transform: res: *("`body.data`")|top
+    }
+  }
+
+  entity: report: {
+    path: "/ingest/{publicKey}": {
+      rename: param: "publicKey": *"public_key"
+      op: create: method: *POST
+    }
+  }
+
+  entity: screenshot: {
+    path: "/ingest/screenshot/{report}": {
+      rename: param: "report": *"id"
+      op: create: method: *POST
+    }
+  }
+
+  entity: widget_config: {
+    path: "/ingest/{publicKey}/config": {
+      rename: param: "publicKey": *"public_key"
+      op: load: method: *GET
+    }
+  }
+
+}

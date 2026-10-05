@@ -1,0 +1,33 @@
+{
+  "files": [
+    "SUMMARY.md"
+  ],
+  "config": ".sdk/doc/qa/vale.ini",
+  "routes": {},
+  "quoted": {
+    "SUMMARY.md": [
+      "> Buggie is bug tracking that starts with a good report: a tracker for people who\n> build things for clients, whose reporter widget captures the screenshot, the\n> console and the failing request at the moment something broke. It is AGPL-3.0 and\n> self-hostable, with a hosted service at buggie.eu.\n>\n> This definition covers both HTTP APIs Buggie documents for its users:\n>\n> - **The token API** (`/v1`), for scripting against a workspace: listing, reading,\n> filing and updating issues, and listing projects. It lives on the workspace&#39;s own\n> subdomain and is authenticated by a personal access token made under\n> Settings → Workspace → API tokens, with the abilities `read` and/or `write`.\n> Tokens are for members of staff: a client&#39;s token is refused with 403.\n> Requests are limited to 120 a minute per token.\n> - **The reporter ingest API** (`/ingest`), which the web widget and the native\n> SDKs post bug reports to. It is unauthenticated and keyed by a project&#39;s public\n> widget key. It is documented on the central domain, `https://buggie.eu/api`, or\n> a self-hosted install&#39;s own domain.\n>\n> Not covered, deliberately: the inbound-mail webhook (`/mail/inbound`), which is a\n> Mailgun callback rather than an API for Buggie&#39;s users; the webhooks Buggie sends\n> to you (https://buggie.eu/docs/webhooks); and the application&#39;s own screens.\n>\n> Unofficial definition authored by Voxgig from Buggie&#39;s public source\n> (https://github.com/bpowerie25/buggie: `routes/api.php`, the `Api` controllers and\n> the form requests they validate with) and its documentation\n> (https://buggie.eu/docs/api, https://buggie.eu/docs/native-sdks), and verified\n> against a self-hosted instance built from that source. Not an official Buggie\n> document.",
+      "A member of the team.",
+      "A page of issues.",
+      "A personal access token from Settings → Workspace → API tokens, for members of staff. It is shown once, works only in the workspace it was made in, and carries the abilities `read` (list and read issues and projects) and/or `write` (create and update issues).",
+      "A pinned card stays on the board whatever the filter says.",
+      "Buggie (hosted). The token API answers on the workspace&#39;s own subdomain. A self-hosted install serves the same paths on its own domain.",
+      "Custom field values keyed by the field&#39;s key, for example `&#123;&quot;environment&quot;: &quot;Production&quot;&#125;`. An issue with none gets an empty array, `[]`, rather than an empty object.",
+      "How much the key trusts what a page says about the reporter.",
+      "The clients an issue is shared with, by user id, when `client_audience` is `specific`.",
+      "The created issue, key included.",
+      "The error, if there was one.",
+      "The issue.",
+      "The key&#39;s settings",
+      "The projects",
+      "The reference shown to the reporter.",
+      "The report was accepted and is being processed",
+      "The screenshot was stored",
+      "The updated issue",
+      "What the reporter wrote.",
+      "Where it happened.",
+      "Which clients see a client-visible issue.",
+      "Who is reporting."
+    ]
+  }
+}

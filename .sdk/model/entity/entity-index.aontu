@@ -1,0 +1,7 @@
+# Entity Models
+
+@"./issue.aontu"
+@"./project.aontu"
+@"./report.aontu"
+@"./screenshot.aontu"
+@"./widget_config.aontu"

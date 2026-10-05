@@ -1,0 +1,101 @@
+# Entity: screenshot
+
+main: kit: entity: screenshot: {
+
+  alias: field: {}
+
+  fields: {
+    id: {
+      h: "Id"
+      n: "id"
+      r: false
+      t: "`$STRING`"
+    }
+    ok: {
+      h: "Ok"
+      n: "ok"
+      r: false
+      t: "`$BOOLEAN`"
+    }
+  }
+
+  id: {
+    field: "id"
+    name: "id"
+  }
+
+  name: "screenshot"
+  op: {
+    create: {
+      name: "create"
+      points: [
+        {
+          co: {
+            id: "POST /ingest/screenshot/{report}"
+            source: "openapi3"
+            version: 2
+          }
+          g: {
+            params: [
+              {
+                k: "param"
+                n: "id"
+                or: "report"
+                r: true
+                t: "`$INTEGER`"
+              }
+            ]
+            query: [
+              {
+                k: "query"
+                n: "expire"
+                or: "expires"
+                r: true
+                t: "`$INTEGER`"
+              }
+              {
+                k: "query"
+                n: "signature"
+                or: "signature"
+                r: true
+                t: "`$STRING`"
+              }
+            ]
+          }
+          m: "POST"
+          o: "/ingest/screenshot/{report}"
+          q: {
+            exist: [
+              "expire"
+              "id"
+              "signature"
+            ]
+          }
+          r: {
+            param: {
+              report: "id"
+            }
+          }
+          s: [
+            {
+              lit: "ingest"
+            }
+            {
+              lit: "screenshot"
+            }
+            {
+              var: "id"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body`"
+          }
+        }
+      ]
+    }
+  }
+
+
+
+}

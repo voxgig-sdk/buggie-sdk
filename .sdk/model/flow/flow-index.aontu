@@ -1,0 +1,7 @@
+# Flows
+
+@"./BasicIssueFlow.aontu"
+@"./BasicProjectFlow.aontu"
+@"./BasicReportFlow.aontu"
+@"./BasicScreenshotFlow.aontu"
+@"./BasicWidgetConfigFlow.aontu"

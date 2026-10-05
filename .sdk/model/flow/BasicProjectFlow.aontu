@@ -1,0 +1,22 @@
+# BasicProjectFlow
+
+main: kit: flow: BasicProjectFlow:
+{
+  entity: "project",
+  kind: "basic",
+  name: "BasicProjectFlow",
+  step: [
+    {
+      o: "list",
+      v: [
+        {
+          apply: "ItemExists",
+          def: {
+            ref: "project_ref01"
+          }
+        }
+      ]
+    }
+  ],
+  "key$": "BasicProjectFlow"
+}

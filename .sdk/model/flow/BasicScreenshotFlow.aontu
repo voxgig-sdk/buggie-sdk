@@ -1,0 +1,22 @@
+# BasicScreenshotFlow
+
+main: kit: flow: BasicScreenshotFlow:
+{
+  entity: "screenshot",
+  kind: "basic",
+  name: "BasicScreenshotFlow",
+  step: [
+    {
+      i: {
+        ref: "screenshot_ref01"
+      }
+
+      m: {
+        report: "report01"
+      }
+
+      o: "create"
+    }
+  ],
+  "key$": "BasicScreenshotFlow"
+}

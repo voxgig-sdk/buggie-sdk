@@ -1,0 +1,66 @@
+# API Information
+
+
+main: {
+  kit: {
+    info: {
+      contact: {
+        name: "Buggie"
+        url: "https://buggie.eu"
+      }
+      description: `Buggie is bug tracking that starts with a good report: a tracker for people who
+build things for clients, whose reporter widget captures the screenshot, the
+console and the failing request at the moment something broke. It is AGPL-3.0 and
+self-hostable, with a hosted service at buggie.eu.
+
+This definition covers both HTTP APIs Buggie documents for its users:
+
+- **The token API** (\`/v1\`), for scripting against a workspace: listing, reading,
+filing and updating issues, and listing projects. It lives on the workspace's own
+subdomain and is authenticated by a personal access token made under
+Settings → Workspace → API tokens, with the abilities \`read\` and/or \`write\`.
+Tokens are for members of staff: a client's token is refused with 403.
+Requests are limited to 120 a minute per token.
+- **The reporter ingest API** (\`/ingest\`), which the web widget and the native
+SDKs post bug reports to. It is unauthenticated and keyed by a project's public
+widget key. It is documented on the central domain, \`https://buggie.eu/api\`, or
+a self-hosted install's own domain.
+
+Not covered, deliberately: the inbound-mail webhook (\`/mail/inbound\`), which is a
+Mailgun callback rather than an API for Buggie's users; the webhooks Buggie sends
+to you (https://buggie.eu/docs/webhooks); and the application's own screens.
+
+Unofficial definition authored by Voxgig from Buggie's public source
+(https://github.com/bpowerie25/buggie: \`routes/api.php\`, the \`Api\` controllers and
+the form requests they validate with) and its documentation
+(https://buggie.eu/docs/api, https://buggie.eu/docs/native-sdks), and verified
+against a self-hosted instance built from that source. Not an official Buggie
+document.
+`
+      security: {
+        in: "header"
+        name: "Authorization"
+        prefix: "Bearer"
+        scheme: "bearerAuth"
+        type: "http"
+      }
+      servers: [
+        {
+          description: "Buggie (hosted). The token API answers on the workspace's own subdomain. A self-hosted install serves the same paths on its own domain."
+          url: "https://{workspace}.buggie.eu/api"
+          variables: {
+            workspace: {
+              default: "your-workspace"
+              description: "The workspace's subdomain, e.g. `acme` for `acme.buggie.eu`. A token works only in the workspace it was made in; anywhere else it gets 404."
+            }
+          }
+        }
+      ]
+      summary: "Buggie is bug tracking that starts with a good report: a tracker for people who build things for clients, whose reporter widget captures the screenshot, the console and the failing request at the moment something broke."
+      title: "Buggie API"
+      version: "1.0.0"
+      website: "https://buggie.eu/docs/api"
+    }
+  }
+}
+

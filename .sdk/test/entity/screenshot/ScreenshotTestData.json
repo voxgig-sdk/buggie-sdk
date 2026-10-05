@@ -1,0 +1,32 @@
+{
+  "existing": {
+    "screenshot": {
+      "SCREENSHOT00": {
+        "id": "SCREENSHOT00",
+        "ok": false
+      },
+      "SCREENSHOT01": {
+        "id": "SCREENSHOT01",
+        "ok": false
+      },
+      "SCREENSHOT02": {
+        "id": "SCREENSHOT02",
+        "ok": false
+      }
+    }
+  },
+  "new": {
+    "screenshot": {
+      "screenshot_ref01": {
+        "ok": false
+      }
+    }
+  },
+  "requests": {
+    "POST /ingest/screenshot/{report}": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

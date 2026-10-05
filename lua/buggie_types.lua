@@ -1,0 +1,173 @@
+-- Typed models for the Buggie SDK (LuaLS annotations).
+--
+-- GENERATED from the API model: main.kit.entity.<e>.fields{} and per-op
+-- params (op.<name>.points[].g.params[]). Field/param types come from the
+-- canonical type sentinels via @voxgig/sdkgen canonToType (source of truth:
+-- @voxgig/apidef VALID_CANON). Annotations only — no runtime effect. Do not
+-- edit by hand.
+
+---@class Issue
+---@field assignee? table
+---@field assignee_id? number
+---@field board_pinned? boolean
+---@field client_audience? string
+---@field client_share_ids? table
+---@field closed_at? string
+---@field created_at? string
+---@field custom_fields? any
+---@field description? table
+---@field due_on? string
+---@field estimate_minutes? number
+---@field id? string
+---@field key? string
+---@field labels? table
+---@field occurrences? number
+---@field parent? string
+---@field phase_id? number
+---@field priority? number
+---@field project? table
+---@field project_id number
+---@field reporter? table
+---@field start_on? string
+---@field status? table
+---@field status_id? number
+---@field time_spent_minutes? number
+---@field title? string
+---@field type? string
+---@field updated_at? string
+---@field version_id? number
+---@field visibility? string
+
+---@class IssueLoadMatch
+---@field id string
+
+---@class IssueListMatch
+---@field page? number
+---@field per_page? number
+---@field q? string
+
+---@class IssueCreateData
+---@field assignee? table
+---@field assignee_id? number
+---@field board_pinned? boolean
+---@field client_audience? string
+---@field client_share_ids? table
+---@field closed_at? string
+---@field created_at? string
+---@field custom_fields? any
+---@field description? table
+---@field due_on? string
+---@field estimate_minutes? number
+---@field id? string
+---@field key? string
+---@field labels? table
+---@field occurrences? number
+---@field parent? string
+---@field phase_id? number
+---@field priority? number
+---@field project? table
+---@field project_id number
+---@field reporter? table
+---@field start_on? string
+---@field status? table
+---@field status_id? number
+---@field time_spent_minutes? number
+---@field title? string
+---@field type? string
+---@field updated_at? string
+---@field version_id? number
+---@field visibility? string
+
+---@class IssueUpdateData
+---@field id string
+---@field assignee? table
+---@field assignee_id? number
+---@field board_pinned? boolean
+---@field client_audience? string
+---@field client_share_ids? table
+---@field closed_at? string
+---@field created_at? string
+---@field custom_fields? any
+---@field description? table
+---@field due_on? string
+---@field estimate_minutes? number
+---@field key? string
+---@field labels? table
+---@field occurrences? number
+---@field parent? string
+---@field phase_id? number
+---@field priority? number
+---@field project? table
+---@field project_id? number
+---@field reporter? table
+---@field start_on? string
+---@field status? table
+---@field status_id? number
+---@field time_spent_minutes? number
+---@field title? string
+---@field type? string
+---@field updated_at? string
+---@field version_id? number
+---@field visibility? string
+
+---@class Project
+---@field description? string
+---@field key? string
+---@field name? string
+---@field slug? string
+
+---@class ProjectListMatch
+---@field description? string
+---@field key? string
+---@field name? string
+---@field slug? string
+
+---@class Report
+---@field body? string
+---@field console? table
+---@field environment? table
+---@field error? table
+---@field id? number
+---@field network? table
+---@field reference? string
+---@field reporter? table
+---@field screenshot? boolean
+---@field title string
+---@field upload_url? string
+
+---@class ReportCreateData
+---@field public_key string
+---@field body? string
+---@field console? table
+---@field environment? table
+---@field error? table
+---@field id? number
+---@field network? table
+---@field reference? string
+---@field reporter? table
+---@field screenshot? boolean
+---@field title string
+---@field upload_url? string
+
+---@class Screenshot
+---@field id? string
+---@field ok? boolean
+
+---@class ScreenshotCreateData
+---@field id number
+---@field expire number
+---@field signature string
+---@field ok? boolean
+
+---@class WidgetConfig
+---@field brand? table
+---@field capture_screenshot? boolean
+---@field mode? string
+---@field require_email? boolean
+
+---@class WidgetConfigLoadMatch
+---@field public_key string
+
+local M = {}
+
+return M

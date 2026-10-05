@@ -1,0 +1,142 @@
+# Entity: report
+
+main: kit: entity: report: {
+
+  alias: field: {}
+
+  fields: {
+    body: {
+      h: "Body"
+      n: "body"
+      r: false
+      sh: "What the reporter wrote."
+      t: "`$STRING`"
+    }
+    console: {
+      h: "Console"
+      n: "console"
+      r: false
+      t: "`$ARRAY`"
+    }
+    environment: {
+      h: "Environment"
+      n: "environment"
+      r: false
+      sh: "Where it happened."
+      t: "`$OBJECT`"
+    }
+    error: {
+      h: "Error"
+      n: "error"
+      r: false
+      sh: "The error, if there was one."
+      t: "`$OBJECT`"
+    }
+    id: {
+      h: "Id"
+      n: "id"
+      r: false
+      t: "`$INTEGER`"
+    }
+    network: {
+      h: "Network"
+      n: "network"
+      r: false
+      t: "`$ARRAY`"
+    }
+    reference: {
+      h: "Reference"
+      n: "reference"
+      r: false
+      sh: "The reference shown to the reporter."
+      t: "`$STRING`"
+    }
+    reporter: {
+      h: "Reporter"
+      n: "reporter"
+      r: false
+      sh: "Who is reporting."
+      t: "`$OBJECT`"
+    }
+    screenshot: {
+      h: "Screenshot"
+      n: "screenshot"
+      r: false
+      sh: "Ask for a screenshot upload URL in the response."
+      t: "`$BOOLEAN`"
+    }
+    title: {
+      h: "Title"
+      n: "title"
+      r: true
+      t: "`$STRING`"
+    }
+    upload_url: {
+      fo: "uri"
+      h: "Upload Url"
+      n: "upload_url"
+      r: false
+      sh: "A signed URL for the screenshot, valid for five minutes."
+      t: "`$STRING`"
+    }
+  }
+
+  id: {
+    field: "id"
+    name: "id"
+  }
+
+  name: "report"
+  op: {
+    create: {
+      name: "create"
+      points: [
+        {
+          co: {
+            id: "POST /ingest/{publicKey}"
+            source: "openapi3"
+            version: 2
+          }
+          g: {
+            params: [
+              {
+                k: "param"
+                n: "public_key"
+                or: "publicKey"
+                r: true
+                t: "`$STRING`"
+              }
+            ]
+          }
+          m: "POST"
+          o: "/ingest/{publicKey}"
+          q: {
+            exist: [
+              "public_key"
+            ]
+          }
+          r: {
+            param: {
+              publicKey: "public_key"
+            }
+          }
+          s: [
+            {
+              lit: "ingest"
+            }
+            {
+              var: "public_key"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body`"
+          }
+        }
+      ]
+    }
+  }
+
+
+
+}

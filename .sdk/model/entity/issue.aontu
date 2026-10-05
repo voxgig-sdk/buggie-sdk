@@ -1,0 +1,412 @@
+# Entity: issue
+
+main: kit: entity: issue: {
+
+  alias: field: {}
+
+  fields: {
+    assignee: {
+      h: "Assignee"
+      n: "assignee"
+      r: false
+      t: "`$OBJECT`"
+    }
+    assignee_id: {
+      h: "Assignee Id"
+      n: "assignee_id"
+      r: false
+      sh: "A member of the team."
+      t: "`$INTEGER`"
+    }
+    board_pinned: {
+      h: "Board Pinned"
+      n: "board_pinned"
+      r: false
+      sh: "A pinned card stays on the board whatever the filter says."
+      t: "`$BOOLEAN`"
+    }
+    client_audience: {
+      h: "Client Audience"
+      n: "client_audience"
+      r: false
+      sh: "Which clients see a client-visible issue."
+      t: "`$STRING`"
+    }
+    client_share_ids: {
+      h: "Client Share Ids"
+      n: "client_share_ids"
+      r: false
+      sh: "The clients an issue is shared with, by user id, when `client_audience` is `specific`."
+      t: "`$ARRAY`"
+    }
+    closed_at: {
+      fo: "date-time"
+      h: "Closed At"
+      n: "closed_at"
+      r: false
+      t: "`$STRING`"
+    }
+    created_at: {
+      fo: "date-time"
+      h: "Created At"
+      n: "created_at"
+      r: false
+      t: "`$STRING`"
+    }
+    custom_fields: {
+      h: "Custom Fields"
+      n: "custom_fields"
+      r: false
+      sh: "Custom field values keyed by the field's key, e.g."
+      t: "`$ANY`"
+    }
+    description: {
+      h: "Description"
+      n: "description"
+      r: false
+      sh: "A rich-text document in Tiptap's JSON form, e.g."
+      t: "`$OBJECT`"
+    }
+    due_on: {
+      fo: "date"
+      h: "Due On"
+      n: "due_on"
+      r: false
+      t: "`$STRING`"
+    }
+    estimate_minutes: {
+      h: "Estimate Minutes"
+      n: "estimate_minutes"
+      r: false
+      t: "`$INTEGER`"
+    }
+    id: {
+      h: "Id"
+      n: "id"
+      r: false
+      t: "`$STRING`"
+    }
+    key: {
+      h: "Key"
+      n: "key"
+      r: false
+      t: "`$STRING`"
+    }
+    labels: {
+      h: "Labels"
+      n: "labels"
+      r: false
+      sh: "Label names."
+      t: "`$ARRAY`"
+    }
+    occurrences: {
+      h: "Occurrences"
+      n: "occurrences"
+      r: false
+      sh: "How many times this bug has been reported, counting the first."
+      t: "`$INTEGER`"
+    }
+    parent: {
+      h: "Parent"
+      n: "parent"
+      r: false
+      sh: "An issue key; the new issue is created as its subtask."
+      t: "`$STRING`"
+    }
+    phase_id: {
+      h: "Phase Id"
+      n: "phase_id"
+      r: false
+      sh: "A phase of the issue's project."
+      t: "`$INTEGER`"
+    }
+    priority: {
+      h: "Priority"
+      n: "priority"
+      r: false
+      sh: "0 none, 1 low, 2 medium, 3 high, 4 urgent."
+      t: "`$INTEGER`"
+    }
+    project: {
+      h: "Project"
+      n: "project"
+      r: false
+      t: "`$OBJECT`"
+    }
+    project_id: {
+      h: "Project Id"
+      n: "project_id"
+      r: true
+      sh: "The project's id, for a project the token's owner can see."
+      t: "`$INTEGER`"
+    }
+    reporter: {
+      h: "Reporter"
+      n: "reporter"
+      r: false
+      t: "`$OBJECT`"
+    }
+    start_on: {
+      fo: "date"
+      h: "Start On"
+      n: "start_on"
+      r: false
+      t: "`$STRING`"
+    }
+    status: {
+      h: "Status"
+      n: "status"
+      r: false
+      t: "`$OBJECT`"
+    }
+    status_id: {
+      h: "Status Id"
+      n: "status_id"
+      r: false
+      sh: "A status of the workspace."
+      t: "`$INTEGER`"
+    }
+    time_spent_minutes: {
+      h: "Time Spent Minutes"
+      n: "time_spent_minutes"
+      r: false
+      t: "`$INTEGER`"
+    }
+    title: {
+      h: "Title"
+      n: "title"
+      op: {
+        create: {
+          req: true
+          type: "`$STRING`"
+        }
+      }
+      r: false
+      t: "`$STRING`"
+    }
+    type: {
+      h: "Type"
+      n: "type"
+      r: false
+      t: "`$STRING`"
+    }
+    updated_at: {
+      fo: "date-time"
+      h: "Updated At"
+      n: "updated_at"
+      r: false
+      t: "`$STRING`"
+    }
+    version_id: {
+      h: "Version Id"
+      n: "version_id"
+      r: false
+      sh: "A release of the issue's project."
+      t: "`$INTEGER`"
+    }
+    visibility: {
+      h: "Visibility"
+      n: "visibility"
+      r: false
+      t: "`$STRING`"
+    }
+  }
+
+  id: {
+    field: "id"
+    name: "id"
+  }
+
+  name: "issue"
+  op: {
+    create: {
+      name: "create"
+      points: [
+        {
+          co: {
+            id: "POST /v1/issues"
+            source: "openapi3"
+            version: 2
+          }
+          m: "POST"
+          o: "/v1/issues"
+          s: [
+            {
+              lit: "v1"
+            }
+            {
+              lit: "issues"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body.data`"
+          }
+        }
+      ]
+    }
+    list: {
+      name: "list"
+      points: [
+        {
+          co: {
+            id: "GET /v1/issues"
+            source: "openapi3"
+            version: 2
+          }
+          g: {
+            query: [
+              {
+                ex: 1
+                k: "query"
+                n: "page"
+                or: "page"
+                r: false
+                t: "`$INTEGER`"
+              }
+              {
+                ex: 50
+                k: "query"
+                n: "per_page"
+                or: "per_page"
+                r: false
+                t: "`$INTEGER`"
+              }
+              {
+                k: "query"
+                n: "q"
+                or: "q"
+                r: false
+                t: "`$STRING`"
+              }
+            ]
+          }
+          m: "GET"
+          o: "/v1/issues"
+          q: {
+            exist: [
+              "page"
+              "per_page"
+              "q"
+            ]
+          }
+          s: [
+            {
+              lit: "v1"
+            }
+            {
+              lit: "issues"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body.data`"
+          }
+        }
+      ]
+    }
+    load: {
+      name: "load"
+      points: [
+        {
+          co: {
+            id: "GET /v1/issues/{key}"
+            source: "openapi3"
+            version: 2
+          }
+          g: {
+            params: [
+              {
+                k: "param"
+                n: "id"
+                or: "key"
+                r: true
+                t: "`$STRING`"
+              }
+            ]
+          }
+          m: "GET"
+          o: "/v1/issues/{key}"
+          q: {
+            exist: [
+              "id"
+            ]
+          }
+          r: {
+            param: {
+              key: "id"
+            }
+          }
+          s: [
+            {
+              lit: "v1"
+            }
+            {
+              lit: "issues"
+            }
+            {
+              var: "id"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body.data`"
+          }
+        }
+      ]
+    }
+    update: {
+      name: "update"
+      points: [
+        {
+          co: {
+            id: "PATCH /v1/issues/{key}"
+            source: "openapi3"
+            version: 2
+          }
+          g: {
+            params: [
+              {
+                k: "param"
+                n: "id"
+                or: "key"
+                r: true
+                t: "`$STRING`"
+              }
+            ]
+          }
+          m: "PATCH"
+          o: "/v1/issues/{key}"
+          q: {
+            exist: [
+              "id"
+            ]
+          }
+          r: {
+            param: {
+              key: "id"
+            }
+          }
+          s: [
+            {
+              lit: "v1"
+            }
+            {
+              lit: "issues"
+            }
+            {
+              var: "id"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body.data`"
+          }
+        }
+      ]
+    }
+  }
+
+
+
+}

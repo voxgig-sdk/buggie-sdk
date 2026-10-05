@@ -1,0 +1,41 @@
+{
+  "existing": {
+    "project": {
+      "PROJECT00": {
+        "description": "s28",
+        "key": "s29",
+        "name": "s2a",
+        "slug": "s2b"
+      },
+      "PROJECT01": {
+        "description": "s50",
+        "key": "s51",
+        "name": "s52",
+        "slug": "s53"
+      },
+      "PROJECT02": {
+        "description": "s78",
+        "key": "s79",
+        "name": "s7a",
+        "slug": "s7b"
+      }
+    }
+  },
+  "new": {
+    "project": {
+      "project_ref01": {
+        "description": "sa0",
+        "key": "sa1",
+        "name": "sa2",
+        "slug": "sa3"
+      }
+    }
+  },
+  "requests": {
+    "GET /v1/projects": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

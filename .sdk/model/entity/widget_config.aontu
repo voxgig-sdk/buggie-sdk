@@ -1,0 +1,91 @@
+# Entity: widget_config
+
+main: kit: entity: widget_config: {
+
+  alias: field: {}
+
+  fields: {
+    brand: {
+      h: "Brand"
+      n: "brand"
+      r: false
+      t: "`$OBJECT`"
+    }
+    capture_screenshot: {
+      h: "Capture Screenshot"
+      n: "capture_screenshot"
+      r: false
+      t: "`$BOOLEAN`"
+    }
+    mode: {
+      h: "Mode"
+      n: "mode"
+      r: false
+      sh: "How much the key trusts what a page says about the reporter."
+      t: "`$STRING`"
+    }
+    require_email: {
+      h: "Require Email"
+      n: "require_email"
+      r: false
+      t: "`$BOOLEAN`"
+    }
+  }
+
+  name: "widget_config"
+  op: {
+    load: {
+      name: "load"
+      points: [
+        {
+          co: {
+            id: "GET /ingest/{publicKey}/config"
+            source: "openapi3"
+            version: 2
+          }
+          g: {
+            params: [
+              {
+                k: "param"
+                n: "public_key"
+                or: "publicKey"
+                r: true
+                t: "`$STRING`"
+              }
+            ]
+          }
+          m: "GET"
+          o: "/ingest/{publicKey}/config"
+          q: {
+            exist: [
+              "public_key"
+            ]
+          }
+          r: {
+            param: {
+              publicKey: "public_key"
+            }
+          }
+          s: [
+            {
+              lit: "ingest"
+            }
+            {
+              var: "public_key"
+            }
+            {
+              lit: "config"
+            }
+          ]
+          t: {
+            req: "`reqdata`"
+            res: "`body`"
+          }
+        }
+      ]
+    }
+  }
+
+
+
+}

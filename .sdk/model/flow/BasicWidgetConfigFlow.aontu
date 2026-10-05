@@ -1,0 +1,32 @@
+# BasicWidgetConfigFlow
+
+main: kit: flow: BasicWidgetConfigFlow:
+{
+  entity: "widget_config",
+  kind: "basic",
+  name: "BasicWidgetConfigFlow",
+  step: [
+    {
+      i: {
+        ref: "widget_config_ref01",
+        srcdatavar: "widget_config_ref01_data",
+        suffix: "_dt0"
+      }
+
+      m: {
+        id: "widget_config01"
+      }
+
+      o: "load",
+      v: [
+        {
+          apply: "TextFieldMark",
+          def: {
+            mark: "Mark01-widget_config_ref01"
+          }
+        }
+      ]
+    }
+  ],
+  "key$": "BasicWidgetConfigFlow"
+}

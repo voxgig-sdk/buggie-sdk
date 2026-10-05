@@ -1,0 +1,47 @@
+{
+  "existing": {
+    "widget_config": {
+      "WIDGET_CONFIG00": {
+        "brand": {},
+        "capture_screenshot": false,
+        "mode": "s2a",
+        "require_email": false,
+        "public_key": "PUBLIC_KEY01",
+        "id": "WIDGET_CONFIG00"
+      },
+      "WIDGET_CONFIG01": {
+        "brand": {},
+        "capture_screenshot": false,
+        "mode": "s52",
+        "require_email": false,
+        "public_key": "PUBLIC_KEY01",
+        "id": "WIDGET_CONFIG01"
+      },
+      "WIDGET_CONFIG02": {
+        "brand": {},
+        "capture_screenshot": false,
+        "mode": "s7a",
+        "require_email": false,
+        "public_key": "PUBLIC_KEY01",
+        "id": "WIDGET_CONFIG02"
+      }
+    }
+  },
+  "new": {
+    "widget_config": {
+      "widget_config_ref01": {
+        "brand": {},
+        "capture_screenshot": false,
+        "mode": "sa2",
+        "require_email": false
+      }
+    }
+  },
+  "requests": {
+    "GET /ingest/{publicKey}/config": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

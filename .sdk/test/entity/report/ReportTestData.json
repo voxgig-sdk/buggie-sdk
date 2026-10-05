@@ -1,0 +1,71 @@
+{
+  "existing": {
+    "report": {
+      "REPORT00": {
+        "body": "s6e",
+        "console": [],
+        "environment": {},
+        "error": {},
+        "id": "REPORT00",
+        "network": [],
+        "reference": "s74",
+        "reporter": {},
+        "screenshot": true,
+        "title": "s77",
+        "upload_url": "s78",
+        "public_key": "PUBLIC_KEY01"
+      },
+      "REPORT01": {
+        "body": "sdc",
+        "console": [],
+        "environment": {},
+        "error": {},
+        "id": "REPORT01",
+        "network": [],
+        "reference": "se2",
+        "reporter": {},
+        "screenshot": true,
+        "title": "se5",
+        "upload_url": "se6",
+        "public_key": "PUBLIC_KEY01"
+      },
+      "REPORT02": {
+        "body": "s14a",
+        "console": [],
+        "environment": {},
+        "error": {},
+        "id": "REPORT02",
+        "network": [],
+        "reference": "s150",
+        "reporter": {},
+        "screenshot": true,
+        "title": "s153",
+        "upload_url": "s154",
+        "public_key": "PUBLIC_KEY01"
+      }
+    }
+  },
+  "new": {
+    "report": {
+      "report_ref01": {
+        "body": "s1b8",
+        "console": [],
+        "environment": {},
+        "error": {},
+        "network": [],
+        "reference": "s1be",
+        "reporter": {},
+        "screenshot": true,
+        "title": "s1c1",
+        "upload_url": "s1c2"
+      }
+    }
+  },
+  "requests": {
+    "POST /ingest/{publicKey}": {
+      "provenance": "operation-contract",
+      "version": 2,
+      "source": "openapi3"
+    }
+  }
+}

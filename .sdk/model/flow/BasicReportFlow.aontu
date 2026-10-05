@@ -1,0 +1,22 @@
+# BasicReportFlow
+
+main: kit: flow: BasicReportFlow:
+{
+  entity: "report",
+  kind: "basic",
+  name: "BasicReportFlow",
+  step: [
+    {
+      i: {
+        ref: "report_ref01"
+      }
+
+      m: {
+        public_key: "public_key01"
+      }
+
+      o: "create"
+    }
+  ],
+  "key$": "BasicReportFlow"
+}
