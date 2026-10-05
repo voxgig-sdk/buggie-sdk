@@ -1,0 +1,905 @@
+openapi: 3.0.3
+info:
+  title: Buggie API
+  version: 1.0.0
+  description: |
+    Buggie is bug tracking that starts with a good report: a tracker for people who
+    build things for clients, whose reporter widget captures the screenshot, the
+    console and the failing request at the moment something broke. It is AGPL-3.0 and
+    self-hostable, with a hosted service at buggie.eu.
+
+    This definition covers both HTTP APIs Buggie documents for its users:
+
+    - **The token API** (`/v1`), for scripting against a workspace: listing, reading,
+      filing and updating issues, and listing projects. It lives on the workspace's own
+      subdomain and is authenticated by a personal access token made under
+      Settings → Workspace → API tokens, with the abilities `read` and/or `write`.
+      Tokens are for members of staff: a client's token is refused with 403.
+      Requests are limited to 120 a minute per token.
+    - **The reporter ingest API** (`/ingest`), which the web widget and the native
+      SDKs post bug reports to. It is unauthenticated and keyed by a project's public
+      widget key. It is documented on the central domain, `https://buggie.eu/api`, or
+      a self-hosted install's own domain.
+
+    Not covered, deliberately: the inbound-mail webhook (`/mail/inbound`), which is a
+    Mailgun callback rather than an API for Buggie's users; the webhooks Buggie sends
+    to you (https://buggie.eu/docs/webhooks); and the application's own screens.
+
+    Unofficial definition authored by Voxgig from Buggie's public source
+    (https://github.com/bpowerie25/buggie: `routes/api.php`, the `Api` controllers and
+    the form requests they validate with) and its documentation
+    (https://buggie.eu/docs/api, https://buggie.eu/docs/native-sdks), and verified
+    against a self-hosted instance built from that source. Not an official Buggie
+    document.
+  contact:
+    name: Buggie
+    url: https://buggie.eu
+externalDocs:
+  description: Buggie API documentation
+  url: https://buggie.eu/docs/api
+servers:
+  - url: https://{workspace}.buggie.eu/api
+    description: >-
+      Buggie (hosted). The token API answers on the workspace's own subdomain. A
+      self-hosted install serves the same paths on its own domain.
+    variables:
+      workspace:
+        default: your-workspace
+        description: >-
+          The workspace's subdomain, e.g. `acme` for `acme.buggie.eu`. A token works
+          only in the workspace it was made in; anywhere else it gets 404.
+tags:
+  - name: Issues
+    description: Issues in the workspace, as the token's owner may see them.
+  - name: Projects
+    description: The workspace's active projects.
+  - name: Reports
+    description: >-
+      Bug reports filed through a project's public widget key, as the web widget and
+      the native SDKs do. A report lands in the triage inbox.
+paths:
+  /v1/issues:
+    get:
+      operationId: listIssues
+      tags: [Issues]
+      summary: List issues
+      description: >-
+        Issues the token's owner can see, filtered by `q` (the same query language as
+        the filter bar, https://buggie.eu/docs/query-language). Ordered by priority,
+        then most recently updated.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: >-
+            A query in Buggie's issue query language, e.g. `is:open project:web
+            -label:wontfix`. Defaults to open issues. The response echoes it back
+            canonicalised under `meta.query`.
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page to return, from 1.
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: per_page
+          in: query
+          required: false
+          description: Issues per page.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        '200':
+          description: A page of issues.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssuePage'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+    post:
+      operationId: createIssue
+      tags: [Issues]
+      summary: File an issue
+      description: >-
+        Creates an issue in a project the token's owner can see. Needs the `write`
+        ability.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssueCreate'
+      responses:
+        '201':
+          description: The created issue, key included.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /v1/issues/{key}:
+    parameters:
+      - $ref: '#/components/parameters/IssueKey'
+    get:
+      operationId: getIssue
+      tags: [Issues]
+      summary: Read an issue
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The issue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+    patch:
+      operationId: updateIssue
+      tags: [Issues]
+      summary: Update an issue
+      description: >-
+        Changes only the fields sent. Needs the `write` ability.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssueUpdate'
+      responses:
+        '200':
+          description: The updated issue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IssueResponse'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /v1/projects:
+    get:
+      operationId: listProjects
+      tags: [Projects]
+      summary: List projects
+      description: >-
+        The workspace's active projects that the token's owner can see, by name.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The projects.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectList'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /ingest/{publicKey}:
+    servers:
+      - url: https://buggie.eu/api
+        description: The central domain, as documented for the widget and native SDKs.
+    parameters:
+      - $ref: '#/components/parameters/PublicKey'
+    post:
+      operationId: createReport
+      tags: [Reports]
+      summary: File a bug report
+      description: >-
+        Files a report into the project's triage inbox, as the widget does. No token:
+        the public widget key identifies the project. If the key has an origin
+        allowlist, the request must carry an `Origin` header on that list. Limited to
+        5 reports a minute per address and 200 an hour per key. If `screenshot` is
+        true and the project captures screenshots, the response carries a five-minute
+        `upload_url` for the image.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportCreate'
+      responses:
+        '202':
+          description: The report was accepted and is being processed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportAccepted'
+        '402':
+          description: >-
+            The workspace has used its monthly report allowance. Duplicates of a bug
+            already reported this month still get through.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: The request's `Origin` is not on the key's allowlist.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No active widget key with this value.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /ingest/{publicKey}/config:
+    servers:
+      - url: https://buggie.eu/api
+        description: The central domain, as documented for the widget and native SDKs.
+    parameters:
+      - $ref: '#/components/parameters/PublicKey'
+    get:
+      operationId: getWidgetConfig
+      tags: [Reports]
+      summary: Read a widget key's settings
+      description: >-
+        What a reporter should do for this key, as set in the project: whether an
+        email is required, whether screenshots are captured, the identity mode, and
+        the project's branding.
+      security: []
+      responses:
+        '200':
+          description: The key's settings.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WidgetConfig'
+        '404':
+          description: No active widget key with this value.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /ingest/screenshot/{report}:
+    servers:
+      - url: https://buggie.eu/api
+        description: The central domain, as documented for the widget and native SDKs.
+    post:
+      operationId: uploadReportScreenshot
+      tags: [Reports]
+      summary: Upload a report's screenshot
+      description: >-
+        Attaches one image to a report, once, within five minutes of filing it. Use
+        the `upload_url` from the filing response as it is: its `expires` and
+        `signature` query parameters are what authorise the upload.
+      security: []
+      parameters:
+        - name: report
+          in: path
+          required: true
+          description: The report's id, from the filing response.
+          schema:
+            type: integer
+        - name: expires
+          in: query
+          required: true
+          description: Part of the signed `upload_url`.
+          schema:
+            type: integer
+        - name: signature
+          in: query
+          required: true
+          description: Part of the signed `upload_url`.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [screenshot]
+              properties:
+                screenshot:
+                  type: string
+                  format: binary
+                  description: A JPEG, PNG or WebP image of at most 2 MB.
+      responses:
+        '200':
+          description: The screenshot was stored.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenshotStored'
+        '403':
+          description: The signature is invalid or has expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: No report with this id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: The report already has a screenshot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        A personal access token from Settings → Workspace → API tokens, for members of
+        staff. It is shown once, works only in the workspace it was made in, and
+        carries the abilities
+        `read` (list and read issues and projects) and/or `write` (create and update
+        issues).
+  parameters:
+    IssueKey:
+      name: key
+      in: path
+      required: true
+      description: The issue's key, e.g. `WEB-142`.
+      schema:
+        type: string
+    PublicKey:
+      name: publicKey
+      in: path
+      required: true
+      description: The project's public widget key, e.g. `pk_live_9f3a2b`.
+      schema:
+        type: string
+  responses:
+    Unauthenticated:
+      description: No token, or an expired or revoked one.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: >-
+        The token lacks the ability this call needs, its owner may not do this, or
+        it belongs to a client: API tokens are for members of staff.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: >-
+        Not found, or not visible to the token's owner. A token presented on another
+        workspace's subdomain also gets 404.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ValidationFailed:
+      description: The request was understood and refused; `errors` says why, per field.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    TooManyRequests:
+      description: Too many requests. Wait for `Retry-After` seconds.
+      headers:
+        Retry-After:
+          description: Seconds until another request is allowed.
+          schema:
+            type: integer
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          description: Field names, each with its validation messages.
+          additionalProperties:
+            type: array
+            items:
+              type: string
+      required: [message]
+    IssueStatus:
+      type: object
+      properties:
+        name:
+          type: string
+          example: In progress
+        category:
+          type: string
+          enum: [backlog, unstarted, started, done, canceled]
+        open:
+          type: boolean
+          description: Whether the status counts as open.
+    IssueProject:
+      type: object
+      properties:
+        key:
+          type: string
+          example: WEB
+        slug:
+          type: string
+          example: web
+        name:
+          type: string
+    IssueSummary:
+      type: object
+      properties:
+        key:
+          type: string
+          example: WEB-142
+        title:
+          type: string
+        type:
+          type: string
+          enum: [bug, feature, task, question]
+        priority:
+          type: integer
+          enum: [0, 1, 2, 3, 4]
+          description: 0 none, 1 low, 2 medium, 3 high, 4 urgent.
+        status:
+          $ref: '#/components/schemas/IssueStatus'
+        project:
+          $ref: '#/components/schemas/IssueProject'
+        assignee:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+        labels:
+          type: array
+          description: Label names.
+          items:
+            type: string
+        occurrences:
+          type: integer
+          description: How many times this bug has been reported, counting the first.
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Issue:
+      allOf:
+        - $ref: '#/components/schemas/IssueSummary'
+        - type: object
+          properties:
+            description:
+              type: object
+              nullable: true
+              description: >-
+                A rich-text document in Tiptap's JSON form, e.g. `{"type": "doc", "content":
+                [{"type": "paragraph", "content": [{"type": "text", "text": "Steps to
+                reproduce"}]}]}`.
+              additionalProperties: true
+            reporter:
+              type: object
+              nullable: true
+              properties:
+                id:
+                  type: integer
+                name:
+                  type: string
+            visibility:
+              type: string
+              enum: [internal, client]
+            due_on:
+              type: string
+              format: date
+              nullable: true
+            closed_at:
+              type: string
+              format: date-time
+              nullable: true
+            estimate_minutes:
+              type: integer
+              nullable: true
+            time_spent_minutes:
+              type: integer
+            custom_fields:
+              description: >-
+                Custom field values keyed by the field's key, e.g. `{"environment":
+                "Production"}`. An issue with none gets an empty array, `[]`, rather
+                than an empty object.
+    IssuePage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/IssueSummary'
+        meta:
+          type: object
+          properties:
+            page:
+              type: integer
+            per_page:
+              type: integer
+            total:
+              type: integer
+            last_page:
+              type: integer
+            query:
+              type: string
+              description: The `q` that was applied, canonicalised.
+    IssueResponse:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Issue'
+    IssueCreate:
+      type: object
+      required: [project_id, title]
+      properties:
+        project_id:
+          type: integer
+          description: >-
+            The project's id, for a project the token's owner can see. Note that
+            no endpoint returns project ids: `GET /v1/projects` gives keys and slugs.
+        title:
+          type: string
+          maxLength: 255
+        parent:
+          type: string
+          maxLength: 40
+          description: An issue key; the new issue is created as its subtask.
+          nullable: true
+        description:
+          type: object
+          nullable: true
+          description: >-
+            A rich-text document in Tiptap's JSON form, e.g. `{"type": "doc", "content":
+            [{"type": "paragraph", "content": [{"type": "text", "text": "Steps to
+            reproduce"}]}]}`.
+          additionalProperties: true
+        type:
+          type: string
+          enum: [bug, feature, task, question]
+          default: bug
+        priority:
+          type: integer
+          enum: [0, 1, 2, 3, 4]
+          default: 0
+          description: 0 none, 1 low, 2 medium, 3 high, 4 urgent.
+        status_id:
+          type: integer
+          nullable: true
+          description: >-
+            A status of the workspace. Defaults to the project's default status, or
+            its triage status when a client files the issue.
+        assignee_id:
+          type: integer
+          nullable: true
+          description: A member of the team. Clients cannot be assigned.
+        visibility:
+          type: string
+          enum: [internal, client]
+          default: internal
+        labels:
+          type: array
+          description: Label ids.
+          items:
+            type: integer
+        custom_fields:
+          type: object
+          description: Values keyed by the field's key, checked against the project's fields.
+          additionalProperties: true
+    IssueUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: object
+          nullable: true
+          description: >-
+            A rich-text document in Tiptap's JSON form, e.g. `{"type": "doc", "content":
+            [{"type": "paragraph", "content": [{"type": "text", "text": "Steps to
+            reproduce"}]}]}`.
+          additionalProperties: true
+        type:
+          type: string
+          enum: [bug, feature, task, question]
+        priority:
+          type: integer
+          enum: [0, 1, 2, 3, 4]
+          description: 0 none, 1 low, 2 medium, 3 high, 4 urgent.
+        visibility:
+          type: string
+          enum: [internal, client]
+        client_audience:
+          type: string
+          enum: [default, project, specific]
+          description: Which clients see a client-visible issue.
+        board_pinned:
+          type: boolean
+          description: A pinned card stays on the board whatever the filter says.
+        client_share_ids:
+          type: array
+          maxItems: 100
+          description: The clients an issue is shared with, by user id, when `client_audience` is `specific`.
+          items:
+            type: integer
+        start_on:
+          type: string
+          format: date
+          nullable: true
+        due_on:
+          type: string
+          format: date
+          nullable: true
+        version_id:
+          type: integer
+          nullable: true
+          description: A release of the issue's project.
+        phase_id:
+          type: integer
+          nullable: true
+          description: A phase of the issue's project.
+        status_id:
+          type: integer
+          description: A status of the workspace.
+        assignee_id:
+          type: integer
+          nullable: true
+          description: A member of the team. Clients cannot be assigned.
+        labels:
+          type: array
+          description: Label ids. Replaces the issue's labels.
+          items:
+            type: integer
+        custom_fields:
+          type: object
+          description: Values keyed by the field's key, checked against the project's fields.
+          additionalProperties: true
+    Project:
+      type: object
+      properties:
+        key:
+          type: string
+          example: WEB
+        slug:
+          type: string
+          example: web
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+    ProjectList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+    ReportCreate:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        body:
+          type: string
+          maxLength: 5000
+          nullable: true
+          description: What the reporter wrote.
+        reporter:
+          type: object
+          description: Who is reporting. What is kept depends on the key's identity mode.
+          properties:
+            name:
+              type: string
+              maxLength: 120
+              nullable: true
+            email:
+              type: string
+              format: email
+              maxLength: 255
+              nullable: true
+            ref:
+              type: string
+              maxLength: 120
+              nullable: true
+              description: Your own identifier for the person.
+            user_hash:
+              type: string
+              nullable: true
+              description: >-
+                HMAC-SHA256 of `{ref}:{email}` with the widget key's secret, computed
+                on your server. Makes the report verified; one that does not verify is
+                kept as identified.
+            source:
+              type: string
+              enum: [identify, typed]
+              description: Whether the identity came from your application or was typed by the reporter.
+        environment:
+          type: object
+          description: Where it happened. Bounded and sanitised on arrival.
+          properties:
+            url:
+              type: string
+              maxLength: 2048
+              nullable: true
+              description: The page or screen. Only http(s) addresses are kept.
+            user_agent:
+              type: string
+              maxLength: 512
+              nullable: true
+            release:
+              type: string
+              maxLength: 120
+              nullable: true
+              description: The build that broke.
+          additionalProperties: true
+        error:
+          type: object
+          nullable: true
+          description: The error, if there was one. Reports of the same error are grouped.
+          properties:
+            message:
+              type: string
+              maxLength: 2000
+              nullable: true
+            stack:
+              type: string
+              maxLength: 8000
+              nullable: true
+        console:
+          type: array
+          maxItems: 50
+          nullable: true
+          items:
+            $ref: '#/components/schemas/ConsoleEntry'
+        network:
+          type: array
+          maxItems: 30
+          nullable: true
+          items:
+            $ref: '#/components/schemas/NetworkEntry'
+        screenshot:
+          type: boolean
+          nullable: true
+          description: Ask for a screenshot upload URL in the response.
+    ConsoleEntry:
+      type: object
+      properties:
+        level:
+          type: string
+          maxLength: 10
+          example: error
+        message:
+          type: string
+          maxLength: 2000
+        at:
+          type: integer
+          format: int64
+          description: When, in milliseconds since the Unix epoch.
+    NetworkEntry:
+      type: object
+      properties:
+        method:
+          type: string
+          maxLength: 10
+          example: POST
+        url:
+          type: string
+          maxLength: 2048
+        status:
+          description: The response status, or a word such as `error` when there was no response.
+        duration:
+          type: number
+          description: Milliseconds.
+        at:
+          type: integer
+          format: int64
+          description: When, in milliseconds since the Unix epoch.
+    ReportAccepted:
+      type: object
+      properties:
+        id:
+          type: integer
+        reference:
+          type: string
+          example: R-1042
+          description: The reference shown to the reporter.
+        upload_url:
+          type: string
+          format: uri
+          nullable: true
+          description: >-
+            A signed URL for the screenshot, valid for five minutes. Null unless a
+            screenshot was asked for and the project captures them, or when the report
+            is a free duplicate.
+    WidgetConfig:
+      type: object
+      properties:
+        require_email:
+          type: boolean
+        capture_screenshot:
+          type: boolean
+        mode:
+          type: string
+          enum: [anonymous, email_unverified, identified, verified]
+          description: How much the key trusts what a page says about the reporter.
+        brand:
+          type: object
+          properties:
+            name:
+              type: string
+            logo:
+              type: string
+              format: uri
+              nullable: true
+            color:
+              type: string
+              nullable: true
+              example: '#4f46e5'
+    ScreenshotStored:
+      type: object
+      properties:
+        ok:
+          type: boolean
