@@ -1,6 +1,6 @@
 # Buggie SDK
 
-Buggie API client, generated from the OpenAPI spec.
+Buggie API clients in TypeScript, Python, PHP, Go, Ruby and Lua, plus a CLI and an MCP server for AI agents. All generated from one OpenAPI definition of Buggie's token API and its reporter ingest API, so every surface stays in sync with the API.
 
 Buggie is bug tracking that starts with a good report: a tracker for people who build things for clients, whose reporter widget captures the screenshot, the console and the failing request at the moment something broke.
 
@@ -15,6 +15,88 @@ Learn more about Voxgig SDKs at [voxgig.com/sdk](https://voxgig.com/sdk/).
 > **Features:** `debug`, `idempotency`, `metrics`, `paging`, `ratelimit`, `retry`, `test`, `timeout` — opt-in,
 > inactive until switched on, and configured per client. See the Features
 > section of any SDK README below for what each one does.
+
+## About Buggie API
+
+**Unofficial. Not affiliated with Buggie.** This is an unofficial SDK for the Buggie API, built by [Voxgig](https://voxgig.com/sdk). It is not affiliated with, endorsed by, or sponsored by Buggie or Imperial Resources Limited.
+
+**Why this exists:** Buggie documents two HTTP APIs, a token API for scripting against a workspace and the ingest API its reporter widget posts bug reports to, but publishes no OpenAPI definition and no client libraries for them. Voxgig derived the definition from Buggie's open source code, verified every operation against a running Buggie, and generated these SDKs from it. The definition and its provenance are in `.sdk/def/`. MIT-licensed, take whatever's useful.
+
+### Try it (TypeScript)
+
+```bash
+git clone https://github.com/voxgig-sdk/buggie-sdk
+cd buggie-sdk/ts
+npm install
+npm run build
+npm test
+```
+
+The test suite runs fully offline. Every SDK here ships a test mode that swaps the HTTP transport for an in-memory mock, so you can try it without credentials or a network.
+
+### Work with issues
+
+```ts
+import { BuggieSDK } from '@voxgig-sdk/buggie-sdk'
+
+const client = new BuggieSDK({
+  apikey: process.env.BUGGIE_APIKEY,
+  server: { workspace: 'acme' },
+})
+
+// Open issues in the web project, in Buggie's own query language.
+const open = await client.Issue().list({ q: 'is:open project:web -label:wontfix' })
+console.log(open.map((issue) => issue.data().key))
+
+// File one. project_id is the project's numeric id.
+const filed = await client.Issue().create({ project_id: 1, title: 'Checkout fails on Safari', type: 'bug' })
+
+// An issue is addressed by its key, which the SDK takes as id.
+const issue = await client.Issue().load({ id: filed.data().key })
+await issue.update({ priority: 3 })
+```
+
+### File a bug report from your own code
+
+```ts
+import { BuggieSDK } from '@voxgig-sdk/buggie-sdk'
+
+// The ingest API needs no token: the project's public widget key identifies it.
+const reporter = new BuggieSDK({ base: 'https://buggie.eu/api' })
+
+const report = await reporter.Report().create({
+  public_key: process.env.BUGGIE_WIDGET_KEY,
+  title: 'Pay now does nothing',
+  error: { message: 'TypeError: card is undefined' },
+  environment: { url: 'https://shop.example.com/checkout', release: '2.4.1' },
+})
+console.log(report.data().reference)
+```
+
+### Authentication
+
+The token API takes a personal access token from Settings → Workspace → API tokens. Tokens are for members of staff: Buggie refuses a client's token. Pass it as `apikey`, and the SDK sends it as `Authorization: Bearer <token>`. A token works only in its own workspace, so name the workspace's subdomain with `server: { workspace: 'acme' }`; for a self-hosted install, set `base` to your own domain, e.g. `https://{workspace}.bugs.example.com/api`. The CLI and the MCP server read the token from `BUGGIE_APIKEY` and the workspace's API address from `BUGGIE_BASE`, e.g. `https://acme.buggie.eu/api`.
+
+The ingest API needs no token. The project's public widget key goes in each call as `public_key`.
+
+### Using the MCP server
+
+```bash
+cd go-mcp && go build -o buggie-mcp .
+export BUGGIE_APIKEY=<token>
+export BUGGIE_BASE=https://acme.buggie.eu/api
+claude mcp add --scope user buggie -- "$PWD/buggie-mcp" -transport stdio
+```
+
+The MCP server is read-only for now. It has two tools, `buggie_list` and `buggie_load`, which list and load issues and projects. Filing and updating go through the SDKs. The CLI in `go-cli` covers list, load and update.
+
+### Honest state
+
+Generated on 2026-10-05 from an OpenAPI definition that Voxgig derived from Buggie's source (commit a73c4cd) and verified against a self-hosted Buggie built from it. Not production-tuned. Two known rough edges. Uploading a report's screenshot does not work from the generated clients yet: they send the upload as JSON, while Buggie takes a multipart image at the signed `upload_url`, so post the image to that URL with your own HTTP client. And an issue taken from `list()` cannot be updated directly; load it by key first, as above. Use it as a starting point or a reference.
+
+When teams want SDKs like these production-grade, idiomatic per language, tested, documented, and released through a real pipeline, Voxgig does that work as a consulting engagement. The toolkit also generates Java and C# if your customers need them. Questions: richard@voxgig.com.
+
+If you are from Buggie and would like this repository removed, or transferred to your own GitHub organisation, email richard@voxgig.com and it will be done within two business days, no questions asked.
 
 ## Entities, not endpoints
 
@@ -435,6 +517,7 @@ The OpenAPI spec(s) this SDK was generated from are kept in the
 [`.sdk/def/`](.sdk/def/) folder.
 
 - Upstream API: [https://buggie.eu](https://buggie.eu)
+- Documentation: [https://buggie.eu/docs/api](https://buggie.eu/docs/api)
 
 ## Security
 

@@ -1,6 +1,6 @@
 # Buggie Golang SDK
 
-
+Buggie API clients in TypeScript, Python, PHP, Go, Ruby and Lua, plus a CLI and an MCP server for AI agents. All generated from one OpenAPI definition of Buggie's token API and its reporter ingest API, so every surface stays in sync with the API.
 
 The Golang SDK for the Buggie API — an entity-oriented client using standard Go conventions. No generics required; data flows as `map[string]any`.
 

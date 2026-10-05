@@ -1,6 +1,6 @@
 # Buggie TypeScript SDK
 
-
+Buggie API clients in TypeScript, Python, PHP, Go, Ruby and Lua, plus a CLI and an MCP server for AI agents. All generated from one OpenAPI definition of Buggie's token API and its reporter ingest API, so every surface stays in sync with the API.
 
 The TypeScript SDK for the Buggie API — a type-safe, entity-oriented client with full async/await support.
 
