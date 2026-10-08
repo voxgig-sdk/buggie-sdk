@@ -149,6 +149,7 @@ module BuggieConfig
           },
           "optspec" => {
             "clearTimer" => "`$FUNCTION`",
+            "now" => "`$FUNCTION`",
             "setTimer" => "`$FUNCTION`",
           },
           "strict" => false,
@@ -387,6 +388,10 @@ module BuggieConfig
                   },
                   "args" => {},
                   "select" => {},
+                  "response" => {
+                    "kind" => "json",
+                    "media" => "application/json",
+                  },
                 },
               ],
             },
@@ -439,12 +444,10 @@ module BuggieConfig
                       },
                     ],
                   },
-                  "select" => {
-                    "exist" => [
-                      "page",
-                      "per_page",
-                      "q",
-                    ],
+                  "select" => {},
+                  "response" => {
+                    "kind" => "json",
+                    "media" => "application/json",
                   },
                 },
               ],
@@ -498,6 +501,10 @@ module BuggieConfig
                       "id",
                     ],
                   },
+                  "response" => {
+                    "kind" => "json",
+                    "media" => "application/json",
+                  },
                 },
               ],
             },
@@ -549,6 +556,10 @@ module BuggieConfig
                     "exist" => [
                       "id",
                     ],
+                  },
+                  "response" => {
+                    "kind" => "json",
+                    "media" => "application/json",
                   },
                 },
               ],
@@ -610,6 +621,10 @@ module BuggieConfig
                   },
                   "args" => {},
                   "select" => {},
+                  "response" => {
+                    "kind" => "json",
+                    "media" => "application/json",
+                  },
                 },
               ],
             },
@@ -736,6 +751,10 @@ module BuggieConfig
                       "public_key",
                     ],
                   },
+                  "response" => {
+                    "kind" => "json",
+                    "media" => "application/json",
+                  },
                 },
               ],
             },
@@ -830,6 +849,20 @@ module BuggieConfig
                       "signature",
                     ],
                   },
+                  "body" => {
+                    "fields" => [
+                      {
+                        "binary" => true,
+                        "name" => "screenshot",
+                      },
+                    ],
+                    "kind" => "multipart",
+                    "media" => "multipart/form-data",
+                  },
+                  "response" => {
+                    "kind" => "json",
+                    "media" => "application/json",
+                  },
                 },
               ],
             },
@@ -912,6 +945,10 @@ module BuggieConfig
                     "exist" => [
                       "public_key",
                     ],
+                  },
+                  "response" => {
+                    "kind" => "json",
+                    "media" => "application/json",
                   },
                 },
               ],

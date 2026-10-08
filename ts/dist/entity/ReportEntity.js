@@ -95,7 +95,7 @@ class ReportEntity extends BuggieEntityBase_1.BuggieEntityBase {
             }
             else {
                 // Off-happy-path (throw disabled): typed as any so the method's
-                // Promise<Report> return stays clean under strict null checks.
+                // Promise<ReportEntity> return stays clean under strict null checks.
                 return undefined;
             }
         }

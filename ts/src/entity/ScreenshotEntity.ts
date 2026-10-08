@@ -146,11 +146,12 @@ class ScreenshotEntity extends BuggieEntityBase<Screenshot> {
       }
       else {
         // Off-happy-path (throw disabled): typed as any so the method's
-        // Promise<Screenshot> return stays clean under strict null checks.
+        // Promise<ScreenshotEntity> return stays clean under strict null checks.
         return undefined as any
       }
     }
   }
+
 
 
 

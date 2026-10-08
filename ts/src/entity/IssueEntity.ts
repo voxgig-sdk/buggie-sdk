@@ -152,7 +152,7 @@ class IssueEntity extends BuggieEntityBase<Issue> {
       }
       else {
         // Off-happy-path (throw disabled): typed as any so the method's
-        // Promise<Issue> return stays clean under strict null checks.
+        // Promise<IssueEntity> return stays clean under strict null checks.
         return undefined as any
       }
     }
@@ -268,7 +268,7 @@ class IssueEntity extends BuggieEntityBase<Issue> {
       }
       else {
         // Off-happy-path (throw disabled): typed as any so the method's
-        // Promise<Issue[]> return stays clean under strict null checks.
+        // Promise<IssueEntity[]> return stays clean under strict null checks.
         return undefined as any
       }
     }
@@ -385,7 +385,7 @@ class IssueEntity extends BuggieEntityBase<Issue> {
       }
       else {
         // Off-happy-path (throw disabled): typed as any so the method's
-        // Promise<Issue> return stays clean under strict null checks.
+        // Promise<IssueEntity> return stays clean under strict null checks.
         return undefined as any
       }
     }
@@ -508,11 +508,12 @@ class IssueEntity extends BuggieEntityBase<Issue> {
       }
       else {
         // Off-happy-path (throw disabled): typed as any so the method's
-        // Promise<Issue> return stays clean under strict null checks.
+        // Promise<IssueEntity> return stays clean under strict null checks.
         return undefined as any
       }
     }
   }
+
 
 
 

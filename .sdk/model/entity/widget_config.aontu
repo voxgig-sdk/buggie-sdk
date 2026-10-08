@@ -66,6 +66,10 @@ main: kit: entity: widget_config: {
               publicKey: "public_key"
             }
           }
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
           s: [
             {
               lit: "ingest"

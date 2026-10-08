@@ -134,9 +134,8 @@ const client = BuggieSDK.test({
   },
 })
 const projects = await client.Project().list()
-// projects is an array of Project entities, populated with mock data
-// — call projects[0].data() for the record itself
-console.log(projects)
+// projects is an array of Project entities, one per mock record
+console.log(projects.map((project) => project.data()))
 ```
 
 ### Python
@@ -144,7 +143,7 @@ console.log(projects)
 ```python
 client = BuggieSDK.test()
 projects = client.Project().list()
-print(projects)
+print([item.data_get() for item in projects])
 ```
 
 ### PHP
@@ -193,8 +192,8 @@ local results, err = client:Project():list()
 | Golang | `github.com/voxgig-sdk/buggie-sdk/go` | `go get github.com/voxgig-sdk/buggie-sdk/go@latest` |
 | Ruby | `voxgig-sdk-buggie-sdk` | publish pending — [install from source](rb/README.md#install) |
 | Lua | `voxgig-sdk-buggie-sdk` | publish pending — [install from source](lua/README.md#install) |
-| Go CLI | `github.com/voxgig-sdk/buggie-sdk/go-cli` | `go install github.com/voxgig-sdk/buggie-sdk/go-cli/cmd/buggie@latest` |
-| Go MCP server | `github.com/voxgig-sdk/buggie-sdk/go-mcp` | `go get github.com/voxgig-sdk/buggie-sdk/go-mcp@latest` |
+| Go CLI | `github.com/voxgig-sdk/buggie-sdk/go-cli` | build from source — [go-cli/README.md](go-cli/README.md) |
+| Go MCP server | `github.com/voxgig-sdk/buggie-sdk/go-mcp` | build from source — [go-mcp/README.md](go-mcp/README.md) |
 
 ## Quickstart
 
@@ -211,10 +210,10 @@ const client = new BuggieSDK({
   },
 })
 
-// List all issues (returns IssueEntity[] — .data() for the record)
+// List all issues (returns IssueEntity[], one entity per record)
 const issues = await client.Issue().list()
 for (const issue of issues) {
-  console.log(issue)
+  console.log(issue.data())
 }
 ```
 
@@ -230,9 +229,10 @@ See the [TypeScript README](ts/README.md) for the full guide.
 
 ## Use it from an AI agent (MCP)
 
-The generated MCP server exposes every operation in this SDK as an
-[MCP](https://modelcontextprotocol.io) tool that Claude, Cursor or Cline
-can call directly. Build and register it:
+The generated MCP server exposes this SDK's list and load operations as
+[MCP](https://modelcontextprotocol.io) tools that Claude, Cursor or Cline
+can call directly. It only reads: create, update, patch and remove become tools when the SDK's model sets
+`main: kit: target: 'go-mcp': tool: write: true`. Build and register it:
 
 ```bash
 cd go-mcp && go build -o buggie-mcp .
@@ -280,14 +280,14 @@ client = BuggieSDK({
     },
 })
 
-# List all issues (returns a list, raises on error)
+# List all issues (a list of entities, one per record; raises on error)
 issues = client.Issue().list()
 for issue in issues:
-    print(issue)
+    print(issue.data_get())
 
-# Load a specific issue (returns the record, raises on error)
+# Load a specific issue (returns the entity, raises on error)
 issue = client.Issue().load({"id": "example_id"})
-print(issue)
+print(issue.data_get())
 ```
 
 ### PHP
@@ -300,11 +300,11 @@ $client = new BuggieSDK([
     "apikey" => getenv("BUGGIE_APIKEY"),
 ]);
 
-// List all issues (returns an array; throws on error)
+// List all issues (an array of entities, one per record; throws on error)
 $issues = $client->Issue()->list();
 print_r(array_map(fn($item) => $item->data_get(), $issues));
 
-// Load a specific issue (returns the ENTITY; call data_get() for the record; throws on error)
+// Load a specific issue (returns the entity; data_get() reads its record; throws on error)
 $issue = $client->Issue()->load(["id" => "example_id"]);
 print_r($issue->data_get());
 ```
@@ -321,12 +321,14 @@ client := sdk.NewBuggieSDK(map[string]any{
     },
 })
 
-// List all issues
+// List all issues (one entity per record; err is non-nil on failure)
 issues, err := client.Issue(nil).List(nil, nil)
 if err != nil {
     panic(err)
 }
-fmt.Println(issues)
+for _, issue := range issues.([]any) {
+    fmt.Println(issue.(sdk.Entity).Data())
+}
 ```
 
 ### Ruby
@@ -338,31 +340,36 @@ client = BuggieSDK.new({
   "apikey" => ENV["BUGGIE_APIKEY"],
 })
 
-# List all issues (returns an Array; raises on error)
+# List all issues (an Array of entities, one per record; raises on error)
 issues = client.Issue.list
-puts issues
+issues.each { |item| puts item.data_get }
 
-# Load a specific issue (returns the ENTITY; call data_get for the record)
+# Load a specific issue (returns the entity; data_get reads its record; raises on error)
 issue = client.Issue.load({ "id" => "example_id" })
-puts issue
+puts issue.data_get
 ```
 
 ### Lua
 
 ```lua
 local sdk = require("buggie_sdk")
+local json = require("dkjson")
 
 local client = sdk.new({
   apikey = os.getenv("BUGGIE_APIKEY"),
 })
 
--- List all issues
+-- List all issues (an array of entities, one per record; err on failure)
 local issues, err = client:Issue():list()
-print(issues)
+if err then error(err) end
+for _, issue in ipairs(issues) do
+  print(json.encode(issue:data_get()))
+end
 
--- Load a specific issue
+-- Load a specific issue (returns the entity; err on failure)
 local issue, err = client:Issue():load({ id = "example_id" })
-print(issue)
+if err then error(err) end
+print(json.encode(issue:data_get()))
 ```
 
 ## Direct and prepare
@@ -388,10 +395,9 @@ const result = await client.direct({
   method: 'GET',
   params: { id: 'example' },
 })
-if (result instanceof Error) {
-  throw result
+if (result.ok) {
+  console.log(result.data)
 }
-console.log(result.data)
 ```
 
 **Python:**
@@ -489,10 +495,12 @@ customizable without forking any upstream tool:
 - **Templates** (`.sdk/tm/`) and **components** (`.sdk/src/cmp/`) are
   the two layers of generation, copied into this repo: templates are the
   literal per-language source, components generate the API-shaped parts.
-- **Regeneration merges.** By default, newly generated content is
-  three-way merged into existing files, so generator updates and local
-  edits usually converge without manual conflict handling. A project can
-  opt for plain overwrite instead.
+- **Regeneration overwrites.** Each run rewrites every generated file from
+  the model, the templates and the components, so an edit made to
+  generated output is lost. Say what this project needs in its own model
+  (`.sdk/model/sdk.aontu`), or extend a target with a component of its
+  own in `.sdk/src/cmp/<target>/`, registered with `registerComponent`,
+  which `voxgig-sdkgen doctor` reports as an addition rather than drift.
 - **Custom features and entire custom targets** arrive through sdkgen
   packages (`voxgig-sdkgen package add`), on the same rails as the
   bundled languages, and `voxgig-sdkgen doctor` reports any drift from

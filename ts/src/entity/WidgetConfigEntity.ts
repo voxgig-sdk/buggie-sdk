@@ -149,11 +149,12 @@ class WidgetConfigEntity extends BuggieEntityBase<WidgetConfig> {
       }
       else {
         // Off-happy-path (throw disabled): typed as any so the method's
-        // Promise<WidgetConfig> return stays clean under strict null checks.
+        // Promise<WidgetConfigEntity> return stays clean under strict null checks.
         return undefined as any
       }
     }
   }
+
 
 
 

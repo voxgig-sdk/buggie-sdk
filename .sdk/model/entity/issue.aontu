@@ -223,6 +223,19 @@ main: kit: entity: issue: {
       name: "create"
       points: [
         {
+          bf: [
+            "assignee_id"
+            "custom_fields"
+            "description"
+            "labels"
+            "parent"
+            "priority"
+            "project_id"
+            "status_id"
+            "title"
+            "type"
+            "visibility"
+          ]
           co: {
             id: "POST /v1/issues"
             source: "openapi3"
@@ -230,6 +243,10 @@ main: kit: entity: issue: {
           }
           m: "POST"
           o: "/v1/issues"
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
           s: [
             {
               lit: "v1"
@@ -283,12 +300,9 @@ main: kit: entity: issue: {
           }
           m: "GET"
           o: "/v1/issues"
-          q: {
-            exist: [
-              "page"
-              "per_page"
-              "q"
-            ]
+          rs: {
+            kind: "json"
+            media: "application/json"
           }
           s: [
             {
@@ -337,6 +351,10 @@ main: kit: entity: issue: {
               key: "id"
             }
           }
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
           s: [
             {
               lit: "v1"
@@ -359,6 +377,24 @@ main: kit: entity: issue: {
       name: "update"
       points: [
         {
+          bf: [
+            "assignee_id"
+            "board_pinned"
+            "client_audience"
+            "client_share_ids"
+            "custom_fields"
+            "description"
+            "due_on"
+            "labels"
+            "phase_id"
+            "priority"
+            "start_on"
+            "status_id"
+            "title"
+            "type"
+            "version_id"
+            "visibility"
+          ]
           co: {
             id: "PATCH /v1/issues/{key}"
             source: "openapi3"
@@ -386,6 +422,10 @@ main: kit: entity: issue: {
             param: {
               key: "id"
             }
+          }
+          rs: {
+            kind: "json"
+            media: "application/json"
           }
           s: [
             {

@@ -163,6 +163,7 @@ class BuggieConfig
           ],
           'optspec' => [
             'clearTimer' => '`$FUNCTION`',
+            'now' => '`$FUNCTION`',
             'setTimer' => '`$FUNCTION`',
           ],
           'strict' => false,
@@ -401,6 +402,10 @@ class BuggieConfig
                   ],
                   'args' => [],
                   'select' => [],
+                  'response' => [
+                    'kind' => 'json',
+                    'media' => 'application/json',
+                  ],
                 ],
               ],
             ],
@@ -453,12 +458,10 @@ class BuggieConfig
                       ],
                     ],
                   ],
-                  'select' => [
-                    'exist' => [
-                      'page',
-                      'per_page',
-                      'q',
-                    ],
+                  'select' => [],
+                  'response' => [
+                    'kind' => 'json',
+                    'media' => 'application/json',
                   ],
                 ],
               ],
@@ -512,6 +515,10 @@ class BuggieConfig
                       'id',
                     ],
                   ],
+                  'response' => [
+                    'kind' => 'json',
+                    'media' => 'application/json',
+                  ],
                 ],
               ],
             ],
@@ -563,6 +570,10 @@ class BuggieConfig
                     'exist' => [
                       'id',
                     ],
+                  ],
+                  'response' => [
+                    'kind' => 'json',
+                    'media' => 'application/json',
                   ],
                 ],
               ],
@@ -624,6 +635,10 @@ class BuggieConfig
                   ],
                   'args' => [],
                   'select' => [],
+                  'response' => [
+                    'kind' => 'json',
+                    'media' => 'application/json',
+                  ],
                 ],
               ],
             ],
@@ -750,6 +765,10 @@ class BuggieConfig
                       'public_key',
                     ],
                   ],
+                  'response' => [
+                    'kind' => 'json',
+                    'media' => 'application/json',
+                  ],
                 ],
               ],
             ],
@@ -844,6 +863,20 @@ class BuggieConfig
                       'signature',
                     ],
                   ],
+                  'body' => [
+                    'fields' => [
+                      [
+                        'binary' => true,
+                        'name' => 'screenshot',
+                      ],
+                    ],
+                    'kind' => 'multipart',
+                    'media' => 'multipart/form-data',
+                  ],
+                  'response' => [
+                    'kind' => 'json',
+                    'media' => 'application/json',
+                  ],
                 ],
               ],
             ],
@@ -926,6 +959,10 @@ class BuggieConfig
                     'exist' => [
                       'public_key',
                     ],
+                  ],
+                  'response' => [
+                    'kind' => 'json',
+                    'media' => 'application/json',
                   ],
                 ],
               ],

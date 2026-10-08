@@ -177,7 +177,7 @@ local issue = client:Issue(nil)
 
 #### `create(reqdata, ctrl) -> any, err`
 
-Create a new entity with the given data.
+Create a new entity with the given data. Returns the created entity, or `nil` and an error on failure.
 
 ```lua
 local result, err = client:Issue():create({
@@ -187,7 +187,7 @@ local result, err = client:Issue():create({
 
 #### `list(reqmatch, ctrl) -> any, err`
 
-List entities matching the given criteria. Returns an array.
+List entities matching the given criteria. Returns an array of entities, one per record, or `nil` and an error on failure.
 
 ```lua
 local results, err = client:Issue():list()
@@ -195,7 +195,7 @@ local results, err = client:Issue():list()
 
 #### `load(reqmatch, ctrl) -> any, err`
 
-Load a single entity matching the given criteria.
+Load a single entity matching the given criteria. Returns the entity, whose record `data_get()` reads, or `nil` and an error on failure.
 
 ```lua
 local result, err = client:Issue():load({ id = "issue_id" })
@@ -203,7 +203,7 @@ local result, err = client:Issue():load({ id = "issue_id" })
 
 #### `update(reqdata, ctrl) -> any, err`
 
-Update an existing entity. The data must include the entity `id`.
+Update an existing entity. The data must include the entity `id`. Returns the updated entity, or `nil` and an error on failure.
 
 ```lua
 local result, err = client:Issue():update({
@@ -261,7 +261,7 @@ local project = client:Project(nil)
 
 #### `list(reqmatch, ctrl) -> any, err`
 
-List entities matching the given criteria. Returns an array.
+List entities matching the given criteria. Returns an array of entities, one per record, or `nil` and an error on failure.
 
 ```lua
 local results, err = client:Project():list()
@@ -323,7 +323,7 @@ local report = client:Report(nil)
 
 #### `create(reqdata, ctrl) -> any, err`
 
-Create a new entity with the given data.
+Create a new entity with the given data. Returns the created entity, or `nil` and an error on failure.
 
 ```lua
 local result, err = client:Report():create({
@@ -379,7 +379,7 @@ local screenshot = client:Screenshot(nil)
 
 #### `create(reqdata, ctrl) -> any, err`
 
-Create a new entity with the given data.
+Create a new entity with the given data. Returns the created entity, or `nil` and an error on failure.
 
 ```lua
 local result, err = client:Screenshot():create({
@@ -388,6 +388,8 @@ local result, err = client:Screenshot():create({
   signature = --[[ string ]],
 })
 ```
+
+Declares a `multipart/form-data` body, which this SDK does not encode yet: it sends the data as JSON.
 
 ### Common Methods
 
@@ -438,7 +440,7 @@ local widget_config = client:WidgetConfig(nil)
 
 #### `load(reqmatch, ctrl) -> any, err`
 
-Load a single entity matching the given criteria.
+Load a single entity matching the given criteria. Returns the entity, whose record `data_get()` reads, or `nil` and an error on failure.
 
 ```lua
 local result, err = client:WidgetConfig():load({ public_key = "public_key" })
@@ -764,6 +766,7 @@ Timeout.
 | Option | Type |
 |---|---|
 | `clearTimer` | function |
+| `now` | function |
 | `setTimer` | function |
 
 These take no default: the feature behaves one way when you supply them and

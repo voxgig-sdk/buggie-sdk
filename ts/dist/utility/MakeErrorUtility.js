@@ -21,7 +21,7 @@ function makeError(ctx, err) {
         err = Object.assign(new Error(text), 'object' === typeof copy ? copy : {});
     }
     const errmsg = err.message || 'unknown error';
-    err.message = 'BuggieSDK: ' + op.name + ': ' + errmsg;
+    (0, CleanUtility_1.setMessage)(err, 'BuggieSDK: ' + op.name + ': ' + errmsg);
     // Reachable for a debugger, invisible to a serialiser.
     if (null != err.ctx) {
         Object.defineProperty(err, 'ctx', { value: err.ctx, enumerable: false, writable: true });

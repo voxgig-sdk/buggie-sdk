@@ -92,6 +92,16 @@ main: kit: entity: report: {
       name: "create"
       points: [
         {
+          bf: [
+            "body"
+            "console"
+            "environment"
+            "error"
+            "network"
+            "reporter"
+            "screenshot"
+            "title"
+          ]
           co: {
             id: "POST /ingest/{publicKey}"
             source: "openapi3"
@@ -119,6 +129,10 @@ main: kit: entity: report: {
             param: {
               publicKey: "public_key"
             }
+          }
+          rs: {
+            kind: "json"
+            media: "application/json"
           }
           s: [
             {

@@ -76,6 +76,20 @@ main: kit: entity: screenshot: {
               report: "id"
             }
           }
+          rb: {
+            fields: [
+              {
+                binary: true
+                name: "screenshot"
+              }
+            ]
+            kind: "multipart"
+            media: "multipart/form-data"
+          }
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
           s: [
             {
               lit: "ingest"

@@ -166,6 +166,7 @@ def make_config():
         },
         "optspec": {
           "clearTimer": "`$FUNCTION`",
+          "now": "`$FUNCTION`",
           "setTimer": "`$FUNCTION`",
         },
         "strict": False,
@@ -404,6 +405,10 @@ def make_config():
                 },
                 "args": {},
                 "select": {},
+                "response": {
+                  "kind": "json",
+                  "media": "application/json",
+                },
               },
             ],
           },
@@ -456,12 +461,10 @@ def make_config():
                     },
                   ],
                 },
-                "select": {
-                  "exist": [
-                    "page",
-                    "per_page",
-                    "q",
-                  ],
+                "select": {},
+                "response": {
+                  "kind": "json",
+                  "media": "application/json",
                 },
               },
             ],
@@ -515,6 +518,10 @@ def make_config():
                     "id",
                   ],
                 },
+                "response": {
+                  "kind": "json",
+                  "media": "application/json",
+                },
               },
             ],
           },
@@ -566,6 +573,10 @@ def make_config():
                   "exist": [
                     "id",
                   ],
+                },
+                "response": {
+                  "kind": "json",
+                  "media": "application/json",
                 },
               },
             ],
@@ -627,6 +638,10 @@ def make_config():
                 },
                 "args": {},
                 "select": {},
+                "response": {
+                  "kind": "json",
+                  "media": "application/json",
+                },
               },
             ],
           },
@@ -753,6 +768,10 @@ def make_config():
                     "public_key",
                   ],
                 },
+                "response": {
+                  "kind": "json",
+                  "media": "application/json",
+                },
               },
             ],
           },
@@ -847,6 +866,20 @@ def make_config():
                     "signature",
                   ],
                 },
+                "body": {
+                  "fields": [
+                    {
+                      "binary": True,
+                      "name": "screenshot",
+                    },
+                  ],
+                  "kind": "multipart",
+                  "media": "multipart/form-data",
+                },
+                "response": {
+                  "kind": "json",
+                  "media": "application/json",
+                },
               },
             ],
           },
@@ -929,6 +962,10 @@ def make_config():
                   "exist": [
                     "public_key",
                   ],
+                },
+                "response": {
+                  "kind": "json",
+                  "media": "application/json",
                 },
               },
             ],

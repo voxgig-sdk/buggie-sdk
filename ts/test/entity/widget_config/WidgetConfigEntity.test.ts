@@ -9,7 +9,7 @@ import { createLiveTransport } from '../../live-runner'
 import { runLiveEntity } from '../../live-entity'
 
 
-import { BuggieSDK, BaseFeature, stdutil } from '../../..'
+import { BuggieSDK, BaseFeature, config, stdutil } from '../../..'
 
 import {
   envOverride,
@@ -41,17 +41,29 @@ describe('WidgetConfigEntity', async () => {
   })
 
 
+  test('validate', async (t) => {
+    if (null == (config as any).feature?.validate) {
+      t.skip('feature not present in this SDK: validate')
+      return
+    }
+    const client = BuggieSDK.test(undefined, { feature: { validate: { active: true } } })
+    await assert.rejects(client.WidgetConfig().load({"public_key":1} as any),
+      (err: any) => 'validate_failed' === err.code)
+  })
+
+
+
   test('basic', async (t) => {
 
     const live = 'TRUE' === process.env.BUGGIE_TEST_LIVE
-    for (const op of ['load']) {
+    for (const op of []) {
       if (!live && maybeSkipControl(t, 'entityOp', 'widget_config.' + op, live)) return
     }
 
     
     const setup = basicSetup()
     if (setup.live) {
-      return runLiveEntity(setup, {"active":true,"alias":{"field":{}},"fields":{"brand":{"a":true,"h":"Brand","n":"brand","r":false,"t":"`$OBJECT`","key$":"brand","index$":0},"capture_screenshot":{"a":true,"h":"Capture Screenshot","n":"capture_screenshot","r":false,"t":"`$BOOLEAN`","key$":"capture_screenshot","index$":1},"mode":{"a":true,"h":"Mode","n":"mode","r":false,"sh":"How much the key trusts what a page says about the reporter.","t":"`$STRING`","key$":"mode","index$":2},"require_email":{"a":true,"h":"Require Email","n":"require_email","r":false,"t":"`$BOOLEAN`","key$":"require_email","index$":3}},"name":"widget_config","op":{"load":{"input":"data","name":"load","points":[{"a":true,"co":{"id":"GET /ingest/{publicKey}/config","source":"openapi3","version":2},"g":{"params":[{"a":true,"k":"param","n":"public_key","or":"publicKey","r":true,"t":"`$STRING`","index$":0}]},"k":"http","m":"GET","o":"/ingest/{publicKey}/config","q":{"exist":["public_key"]},"r":{"param":{"publicKey":"public_key"}},"s":[{"lit":"ingest"},{"var":"public_key"},{"lit":"config"}],"t":{"req":"`reqdata`","res":"`body`"},"index$":0}],"key$":"load"}},"relations":{"ancestors":[]},"key$":"widget_config","name__orig":"widget_config","Name":"WidgetConfig","name_":"widget_config","name-":"widget-config","NAME":"WIDGET_CONFIG","index$":4}, {"active":true,"entity":"widget_config","key$":"BasicWidgetConfigFlow","kind":"basic","name":"BasicWidgetConfigFlow","param":{},"step":[{"a":true,"d":{},"i":{"ref":"widget_config_ref01","srcdatavar":"widget_config_ref01_data","suffix":"_dt0"},"m":{"id":"widget_config01"},"o":"load","s":[],"v":[{"apply":"TextFieldMark","def":{"mark":"Mark01-widget_config_ref01"}}],"index$":0}]}, 'WidgetConfig', {"GET /ingest/{publicKey}/config":{"protocol":"http","parameters":[{"name":"publicKey","in":"path","required":true,"description":"The project's public widget key, e.g. `pk_live_9f3a2b`.","schema":{"type":"string"},"x-ref":"#/components/parameters/PublicKey","index$":0}]}})
+      return runLiveEntity(setup, {"active":true,"alias":{"field":{}},"fields":{"brand":{"a":true,"h":"Brand","n":"brand","r":false,"t":"`$OBJECT`","key$":"brand","index$":0},"capture_screenshot":{"a":true,"h":"Capture Screenshot","n":"capture_screenshot","r":false,"t":"`$BOOLEAN`","key$":"capture_screenshot","index$":1},"mode":{"a":true,"h":"Mode","n":"mode","r":false,"sh":"How much the key trusts what a page says about the reporter.","t":"`$STRING`","key$":"mode","index$":2},"require_email":{"a":true,"h":"Require Email","n":"require_email","r":false,"t":"`$BOOLEAN`","key$":"require_email","index$":3}},"name":"widget_config","op":{"load":{"input":"data","name":"load","points":[{"a":true,"co":{"id":"GET /ingest/{publicKey}/config","source":"openapi3","version":2},"g":{"params":[{"a":true,"k":"param","n":"public_key","or":"publicKey","r":true,"t":"`$STRING`","index$":0}]},"k":"http","m":"GET","o":"/ingest/{publicKey}/config","q":{"exist":["public_key"]},"r":{"param":{"publicKey":"public_key"}},"rs":{"kind":"json","media":"application/json"},"s":[{"lit":"ingest"},{"var":"public_key"},{"lit":"config"}],"t":{"req":"`reqdata`","res":"`body`"},"index$":0}],"key$":"load"}},"relations":{"ancestors":[]},"key$":"widget_config","name__orig":"widget_config","Name":"WidgetConfig","name_":"widget_config","name-":"widget-config","NAME":"WIDGET_CONFIG","index$":4}, {"active":true,"entity":"widget_config","key$":"BasicWidgetConfigFlow","kind":"basic","name":"BasicWidgetConfigFlow","param":{},"step":[{"a":false,"d":{},"i":{"ref":"widget_config_ref01","srcdatavar":"widget_config_ref01_data","suffix":"_dt0"},"m":{"id":"widget_config01"},"o":"load","s":[],"v":[{"apply":"TextFieldMark","def":{"mark":"Mark01-widget_config_ref01"}}],"unreachable":true}]}, 'WidgetConfig', {"GET /ingest/{publicKey}/config":{"protocol":"http","parameters":[{"name":"publicKey","in":"path","required":true,"description":"The project's public widget key, e.g. `pk_live_9f3a2b`.","schema":{"type":"string"},"x-ref":"#/components/parameters/PublicKey","index$":0}]}}, { strict: LIVE_STRICT, t })
     }
     const client = setup.client
     const struct = setup.struct
@@ -61,15 +73,16 @@ describe('WidgetConfigEntity', async () => {
 
     let widget_config_ref01_data = Object.values(setup.data.existing.widget_config)[0] as any
 
-    // LOAD: skipped — no entity id field and load requires path params.
-    // Entity-var is declared here so later flow steps still compile.
-    const widget_config_ref01_ent = client.WidgetConfig()
-
-
   })
 })
 
 
+
+// main.kit.test.live.strict is true (the default is true): a live
+// request that fails, or a live test missing an input it needs,
+// fails the test.
+// An account with no record for a test to read skips it either way.
+const LIVE_STRICT = true
 
 function basicSetup(extra?: any) {
   // TODO: fix test def options

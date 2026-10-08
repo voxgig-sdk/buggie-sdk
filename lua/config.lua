@@ -137,6 +137,7 @@ local function make_config()
         },
         ["optspec"] = {
           ["clearTimer"] = "`$FUNCTION`",
+          ["now"] = "`$FUNCTION`",
           ["setTimer"] = "`$FUNCTION`",
         },
         ["strict"] = false,
@@ -375,6 +376,10 @@ local function make_config()
                 },
                 ["args"] = {},
                 ["select"] = {},
+                ["response"] = {
+                  ["kind"] = "json",
+                  ["media"] = "application/json",
+                },
               },
             },
           },
@@ -427,12 +432,10 @@ local function make_config()
                     },
                   },
                 },
-                ["select"] = {
-                  ["exist"] = {
-                    "page",
-                    "per_page",
-                    "q",
-                  },
+                ["select"] = {},
+                ["response"] = {
+                  ["kind"] = "json",
+                  ["media"] = "application/json",
                 },
               },
             },
@@ -486,6 +489,10 @@ local function make_config()
                     "id",
                   },
                 },
+                ["response"] = {
+                  ["kind"] = "json",
+                  ["media"] = "application/json",
+                },
               },
             },
           },
@@ -537,6 +544,10 @@ local function make_config()
                   ["exist"] = {
                     "id",
                   },
+                },
+                ["response"] = {
+                  ["kind"] = "json",
+                  ["media"] = "application/json",
                 },
               },
             },
@@ -598,6 +609,10 @@ local function make_config()
                 },
                 ["args"] = {},
                 ["select"] = {},
+                ["response"] = {
+                  ["kind"] = "json",
+                  ["media"] = "application/json",
+                },
               },
             },
           },
@@ -724,6 +739,10 @@ local function make_config()
                     "public_key",
                   },
                 },
+                ["response"] = {
+                  ["kind"] = "json",
+                  ["media"] = "application/json",
+                },
               },
             },
           },
@@ -818,6 +837,20 @@ local function make_config()
                     "signature",
                   },
                 },
+                ["body"] = {
+                  ["fields"] = {
+                    {
+                      ["binary"] = true,
+                      ["name"] = "screenshot",
+                    },
+                  },
+                  ["kind"] = "multipart",
+                  ["media"] = "multipart/form-data",
+                },
+                ["response"] = {
+                  ["kind"] = "json",
+                  ["media"] = "application/json",
+                },
               },
             },
           },
@@ -900,6 +933,10 @@ local function make_config()
                   ["exist"] = {
                     "public_key",
                   },
+                },
+                ["response"] = {
+                  ["kind"] = "json",
+                  ["media"] = "application/json",
                 },
               },
             },

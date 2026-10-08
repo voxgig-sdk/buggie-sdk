@@ -44,6 +44,10 @@ main: kit: entity: project: {
           }
           m: "GET"
           o: "/v1/projects"
+          rs: {
+            kind: "json"
+            media: "application/json"
+          }
           s: [
             {
               lit: "v1"

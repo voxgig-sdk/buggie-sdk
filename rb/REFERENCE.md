@@ -180,7 +180,7 @@ issue = client.Issue
 
 #### `create(reqdata, ctrl = nil) -> result`
 
-Create a new entity with the given data. Raises on error.
+Create a new entity with the given data. Returns the created entity and raises on error.
 
 ```ruby
 result = client.Issue.create({
@@ -190,15 +190,16 @@ result = client.Issue.create({
 
 #### `list(reqmatch = nil, ctrl = nil) -> Array`
 
-List entities matching the given criteria (call with no argument to list all). Returns an array. Raises on error.
+List entities matching the given criteria (call with no argument to list all). Returns an array of entities, one per record; `data_get` reads each record. Raises on error.
 
 ```ruby
 results = client.Issue.list
+results.each { |item| puts item.data_get }
 ```
 
 #### `load(reqmatch, ctrl = nil) -> result`
 
-Load a single entity matching the given criteria. Raises on error.
+Load a single entity matching the given criteria. Returns the entity, whose record `data_get` reads, and raises on error.
 
 ```ruby
 result = client.Issue.load({ "id" => "issue_id" })
@@ -206,7 +207,7 @@ result = client.Issue.load({ "id" => "issue_id" })
 
 #### `update(reqdata, ctrl = nil) -> result`
 
-Update an existing entity. The data must include the entity `id`. Raises on error.
+Update an existing entity. The data must include the entity `id`. Returns the updated entity and raises on error.
 
 ```ruby
 result = client.Issue.update({
@@ -264,10 +265,11 @@ project = client.Project
 
 #### `list(reqmatch = nil, ctrl = nil) -> Array`
 
-List entities matching the given criteria (call with no argument to list all). Returns an array. Raises on error.
+List entities matching the given criteria (call with no argument to list all). Returns an array of entities, one per record; `data_get` reads each record. Raises on error.
 
 ```ruby
 results = client.Project.list
+results.each { |item| puts item.data_get }
 ```
 
 ### Common Methods
@@ -326,7 +328,7 @@ report = client.Report
 
 #### `create(reqdata, ctrl = nil) -> result`
 
-Create a new entity with the given data. Raises on error.
+Create a new entity with the given data. Returns the created entity and raises on error.
 
 ```ruby
 result = client.Report.create({
@@ -382,7 +384,7 @@ screenshot = client.Screenshot
 
 #### `create(reqdata, ctrl = nil) -> result`
 
-Create a new entity with the given data. Raises on error.
+Create a new entity with the given data. Returns the created entity and raises on error.
 
 ```ruby
 result = client.Screenshot.create({
@@ -391,6 +393,8 @@ result = client.Screenshot.create({
   "signature" => "example_signature", # String
 })
 ```
+
+Declares a `multipart/form-data` body, which this SDK does not encode yet: it sends the data as JSON.
 
 ### Common Methods
 
@@ -441,7 +445,7 @@ widget_config = client.WidgetConfig
 
 #### `load(reqmatch, ctrl = nil) -> result`
 
-Load a single entity matching the given criteria. Raises on error.
+Load a single entity matching the given criteria. Returns the entity, whose record `data_get` reads, and raises on error.
 
 ```ruby
 result = client.WidgetConfig.load({ "public_key" => "public_key" })
@@ -767,6 +771,7 @@ Timeout.
 | Option | Type |
 |---|---|
 | `clearTimer` | function |
+| `now` | function |
 | `setTimer` | function |
 
 These take no default: the feature behaves one way when you supply them and

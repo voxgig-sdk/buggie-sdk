@@ -8,6 +8,13 @@ local runner = require("test.runner")
 
 local _test_dir = debug.getinfo(1, "S").source:match("^@(.+/)")  or "./"
 
+-- main.kit.test.live.strict is true (the default is true): a live
+-- request that fails, or a live test missing an input it needs,
+-- fails the test.
+-- An account with no record for a test to read skips it either way.
+local LIVE_STRICT = true
+
+
 describe("ScreenshotEntity", function()
   it("should create instance", function()
     local testsdk = sdk.test(nil, nil)
@@ -15,36 +22,37 @@ describe("ScreenshotEntity", function()
     assert.is_not_nil(ent)
   end)
 
+  it("should refuse an invalid request", function()
+    local config = require("config_shared")()
+    if type(config.feature) ~= "table" or config.feature.validate == nil then
+      pending("feature not present in this SDK: validate")
+      return
+    end
+    local client = sdk.test(nil, { feature = { validate = { active = true } } })
+    local _, err = client:Screenshot(nil):create({ ["id"] = "x", ["expire"] = 1, ["signature"] = "x" }, nil)
+    assert.are.equal("validate_failed", type(err) == "table" and err.code or nil)
+  end)
+
   it("should run basic flow", function()
     local setup = screenshot_basic_setup(nil)
     -- Per-op sdk-test-control.json skip.
     local _live = setup.live or false
-    for _, _op in ipairs({"create"}) do
+    for _, _op in ipairs({}) do
       local _should_skip, _reason = runner.is_control_skipped("entityOp", "screenshot." .. _op, _live and "live" or "unit")
       if _should_skip then
         pending(_reason or "skipped via sdk-test-control.json")
         return
       end
     end
-    -- The basic flow consumes synthetic IDs from the fixture. In live mode
-    -- without an *_ENTID env override, those IDs hit the live API and 4xx.
-    if setup.synthetic_only then
-      pending("live entity test uses synthetic IDs from fixture — set BUGGIE_TEST_SCREENSHOT_ENTID JSON to run live")
-      return
-    end
     local client = setup.client
 
-    -- CREATE
-    local screenshot_ref01_ent = client:Screenshot(nil)
-    local screenshot_ref01_data = helpers.to_map(vs.getprop(
-      vs.getpath(setup.data, "new.screenshot"), "screenshot_ref01"))
-    screenshot_ref01_data["report"] = setup.idmap["report01"]
-
-    local screenshot_ref01_data_result, err = screenshot_ref01_ent:create(screenshot_ref01_data, nil)
-    assert.is_nil(err)
-    screenshot_ref01_data = helpers.to_map(type(screenshot_ref01_data_result) == 'table' and screenshot_ref01_data_result.data_get and screenshot_ref01_data_result:data_get() or screenshot_ref01_data_result)
-    assert.is_not_nil(screenshot_ref01_data)
-    assert.is_not_nil(screenshot_ref01_data["id"])
+    -- Bootstrap entity data from existing test data.
+    local screenshot_ref01_data_raw = vs.items(helpers.to_map(
+      vs.getpath(setup.data, "existing.screenshot")))
+    local screenshot_ref01_data = nil
+    if #screenshot_ref01_data_raw > 0 then
+      screenshot_ref01_data = helpers.to_map(screenshot_ref01_data_raw[1][2])
+    end
 
   end)
 end)
@@ -69,7 +77,7 @@ function screenshot_basic_setup(extra)
 
   -- Generate idmap via transform.
   local idmap = vs.transform(
-    { "screenshot01", "screenshot02", "screenshot03", "report01" },
+    { "screenshot01", "screenshot02", "screenshot03" },
     {
       ["`$PACK`"] = { "", {
         ["`$KEY`"] = "`$COPY`",
@@ -78,9 +86,8 @@ function screenshot_basic_setup(extra)
     }
   )
 
-  -- Detect ENTID env override before envOverride consumes it. When live
-  -- mode is on without a real override, the basic test runs against synthetic
-  -- IDs from the fixture and 4xx's. Surface this so the test can skip.
+  -- Whether *_ENTID supplied the idmap, read before env_override consumes
+  -- it: without it, the ids a live flow binds are the fixture's synthetic ones.
   local entid_env_raw = os.getenv("BUGGIE_TEST_SCREENSHOT_ENTID")
   local idmap_overridden = entid_env_raw ~= nil and entid_env_raw:match("^%s*{") ~= nil
 

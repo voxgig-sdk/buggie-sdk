@@ -180,6 +180,7 @@ class Config {
       },
       "optspec": {
         "clearTimer": "`$FUNCTION`",
+        "now": "`$FUNCTION`",
         "setTimer": "`$FUNCTION`"
       },
       "strict": false,
@@ -437,7 +438,11 @@ class Config {
                 "res": "`body.data`"
               },
               "args": {},
-              "select": {}
+              "select": {},
+              "response": {
+                "kind": "json",
+                "media": "application/json"
+              }
             }
           ]
         },
@@ -490,12 +495,10 @@ class Config {
                   }
                 ]
               },
-              "select": {
-                "exist": [
-                  "page",
-                  "per_page",
-                  "q"
-                ]
+              "select": {},
+              "response": {
+                "kind": "json",
+                "media": "application/json"
               }
             }
           ]
@@ -548,6 +551,10 @@ class Config {
                 "exist": [
                   "id"
                 ]
+              },
+              "response": {
+                "kind": "json",
+                "media": "application/json"
               }
             }
           ]
@@ -600,6 +607,10 @@ class Config {
                 "exist": [
                   "id"
                 ]
+              },
+              "response": {
+                "kind": "json",
+                "media": "application/json"
               }
             }
           ]
@@ -660,7 +671,11 @@ class Config {
                 "res": "`body.data`"
               },
               "args": {},
-              "select": {}
+              "select": {},
+              "response": {
+                "kind": "json",
+                "media": "application/json"
+              }
             }
           ]
         }
@@ -786,6 +801,10 @@ class Config {
                 "exist": [
                   "public_key"
                 ]
+              },
+              "response": {
+                "kind": "json",
+                "media": "application/json"
               }
             }
           ]
@@ -880,6 +899,20 @@ class Config {
                   "id",
                   "signature"
                 ]
+              },
+              "body": {
+                "fields": [
+                  {
+                    "binary": true,
+                    "name": "screenshot"
+                  }
+                ],
+                "kind": "multipart",
+                "media": "multipart/form-data"
+              },
+              "response": {
+                "kind": "json",
+                "media": "application/json"
               }
             }
           ]
@@ -963,6 +996,10 @@ class Config {
                 "exist": [
                   "public_key"
                 ]
+              },
+              "response": {
+                "kind": "json",
+                "media": "application/json"
               }
             }
           ]

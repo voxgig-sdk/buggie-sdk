@@ -17,7 +17,12 @@ const PLAN = [
         "args": [],
         "select": {},
         "headers": [],
+        "cookies": [],
+        "responseMedia": [
+            "application/json"
+        ],
         "query": [],
+        "queryArgs": [],
         "auth": [
             [
                 {
@@ -35,14 +40,14 @@ const PLAN = [
                 "type": "bug",
                 "priority": 0,
                 "status": {
-                    "category": "backlog",
                     "name": "In progress",
+                    "category": "backlog",
                     "open": true
                 },
                 "project": {
                     "key": "WEB",
-                    "name": "x",
-                    "slug": "web"
+                    "slug": "web",
+                    "name": "x"
                 },
                 "assignee": {
                     "id": 1,
@@ -76,15 +81,33 @@ const PLAN = [
         "path": "/v1/issues",
         "args": [],
         "select": {
-            "page": "v1",
-            "per_page": "v1",
+            "page": 1,
+            "per_page": 50,
             "q": "v1"
         },
         "headers": [],
+        "cookies": [],
+        "responseMedia": [
+            "application/json"
+        ],
         "query": [
             "q",
             "page",
             "per_page"
+        ],
+        "queryArgs": [
+            {
+                "name": "page",
+                "wire": "page"
+            },
+            {
+                "name": "per_page",
+                "wire": "per_page"
+            },
+            {
+                "name": "q",
+                "wire": "q"
+            }
         ],
         "auth": [
             [
@@ -99,38 +122,38 @@ const PLAN = [
         "sample": {
             "data": [
                 {
+                    "key": "WEB-142",
+                    "title": "x",
+                    "type": "bug",
+                    "priority": 0,
+                    "status": {
+                        "name": "In progress",
+                        "category": "backlog",
+                        "open": true
+                    },
+                    "project": {
+                        "key": "WEB",
+                        "slug": "web",
+                        "name": "x"
+                    },
                     "assignee": {
                         "id": 1,
                         "name": "x"
                     },
-                    "created_at": "2026-01-01T00:00:00Z",
-                    "key": "WEB-142",
                     "labels": [
                         "x"
                     ],
                     "occurrences": 1,
-                    "priority": 0,
-                    "project": {
-                        "key": "WEB",
-                        "name": "x",
-                        "slug": "web"
-                    },
-                    "status": {
-                        "category": "backlog",
-                        "name": "In progress",
-                        "open": true
-                    },
-                    "title": "x",
-                    "type": "bug",
+                    "created_at": "2026-01-01T00:00:00Z",
                     "updated_at": "2026-01-01T00:00:00Z"
                 }
             ],
             "meta": {
-                "last_page": 1,
                 "page": 1,
                 "per_page": 1,
-                "query": "x",
-                "total": 1
+                "total": 1,
+                "last_page": 1,
+                "query": "x"
             }
         },
         "idField": "id"
@@ -150,7 +173,12 @@ const PLAN = [
         ],
         "select": {},
         "headers": [],
+        "cookies": [],
+        "responseMedia": [
+            "application/json"
+        ],
         "query": [],
+        "queryArgs": [],
         "auth": [
             [
                 {
@@ -168,14 +196,14 @@ const PLAN = [
                 "type": "bug",
                 "priority": 0,
                 "status": {
-                    "category": "backlog",
                     "name": "In progress",
+                    "category": "backlog",
                     "open": true
                 },
                 "project": {
                     "key": "WEB",
-                    "name": "x",
-                    "slug": "web"
+                    "slug": "web",
+                    "name": "x"
                 },
                 "assignee": {
                     "id": 1,
@@ -216,7 +244,12 @@ const PLAN = [
         ],
         "select": {},
         "headers": [],
+        "cookies": [],
+        "responseMedia": [
+            "application/json"
+        ],
         "query": [],
+        "queryArgs": [],
         "auth": [
             [
                 {
@@ -234,14 +267,14 @@ const PLAN = [
                 "type": "bug",
                 "priority": 0,
                 "status": {
-                    "category": "backlog",
                     "name": "In progress",
+                    "category": "backlog",
                     "open": true
                 },
                 "project": {
                     "key": "WEB",
-                    "name": "x",
-                    "slug": "web"
+                    "slug": "web",
+                    "name": "x"
                 },
                 "assignee": {
                     "id": 1,
@@ -276,7 +309,12 @@ const PLAN = [
         "args": [],
         "select": {},
         "headers": [],
+        "cookies": [],
+        "responseMedia": [
+            "application/json"
+        ],
         "query": [],
+        "queryArgs": [],
         "auth": [
             [
                 {
@@ -290,10 +328,10 @@ const PLAN = [
         "sample": {
             "data": [
                 {
-                    "description": "x",
                     "key": "WEB",
+                    "slug": "web",
                     "name": "x",
-                    "slug": "web"
+                    "description": "x"
                 }
             ]
         },
@@ -314,7 +352,12 @@ const PLAN = [
         ],
         "select": {},
         "headers": [],
+        "cookies": [],
+        "responseMedia": [
+            "application/json"
+        ],
         "query": [],
+        "queryArgs": [],
         "auth": [],
         "status": 202,
         "sample": {
@@ -342,10 +385,15 @@ const PLAN = [
             "signature": "v1"
         },
         "headers": [],
+        "cookies": [],
+        "responseMedia": [
+            "application/json"
+        ],
         "query": [
             "expires",
             "signature"
         ],
+        "queryArgs": [],
         "auth": [],
         "status": 200,
         "sample": {
@@ -368,7 +416,12 @@ const PLAN = [
         ],
         "select": {},
         "headers": [],
+        "cookies": [],
+        "responseMedia": [
+            "application/json"
+        ],
         "query": [],
+        "queryArgs": [],
         "auth": [],
         "status": 200,
         "sample": {
@@ -376,9 +429,9 @@ const PLAN = [
             "capture_screenshot": true,
             "mode": "anonymous",
             "brand": {
-                "color": "#4f46e5",
+                "name": "x",
                 "logo": "x",
-                "name": "x"
+                "color": "#4f46e5"
             }
         },
         "idField": "id"
